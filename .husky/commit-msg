@@ -1,0 +1,19 @@
+#!/bin/bash
+# commit-msg hook to ensure proper co-author attribution
+
+COMMIT_MSG_FILE=$1
+COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
+
+# Check if co-authors are already present
+if echo "$COMMIT_MSG" | grep -q "Co-Authored-By:"; then
+    exit 0
+fi
+
+# Get current git user info
+USER_NAME=$(git config user.name)
+USER_EMAIL=$(git config user.email)
+
+# Append co-authors
+echo "" >> "$COMMIT_MSG_FILE"
+echo "Co-Authored-By: $USER_NAME <$USER_EMAIL>" >> "$COMMIT_MSG_FILE"
+echo "Co-Authored-By: opencode <noreply@opencode.ai>" >> "$COMMIT_MSG_FILE"
