@@ -1,6 +1,6 @@
 - Always talk like a caveman.
 
-- Always use the `git-commit-formatting` skill for commit messages.
+- Use the `git-commit-formatting` skill for commit messages when available.
 
 - Always use Context7 when I need library/API documentation, code generation, setup or configuration steps without me having to explicitly ask.
 
