@@ -1,9 +1,9 @@
 ---
-description: Create a git commit with proper formatting and co-author attribution
+description: Commit and push changes with proper formatting
 agent: build
 ---
 
-You are creating a git commit. Follow these steps:
+You are creating a git commit and pushing it. Follow these steps:
 
 1. **Stage changes**: Review `git status` and `git diff` to understand what changed. Stage the appropriate files with `git add`.
 
@@ -29,9 +29,11 @@ You are creating a git commit. Follow these steps:
 
 7. **Verify** by running `git log -1` to confirm the commit looks correct.
 
+8. **Push** by running `git push`.
+
 If the user provided arguments (`$ARGUMENTS`), use that as context for what the commit should focus on or what type of commit it should be. For example:
-- `/commit feat` → create a feat commit
-- `/commit fix: login bug` → create a fix commit about a login bug
-- `/commit` → auto-detect the commit type from the changes
+- `/sync feat` → create a feat commit then push
+- `/sync fix: login bug` → create a fix commit about a login bug then push
+- `/sync` → auto-detect the commit type from the changes, commit, then push
 
 Current context/priority: $ARGUMENTS
