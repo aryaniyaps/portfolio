@@ -91,34 +91,3 @@ Compatibility: ctx_read replaces READ operations only. Your native Edit/Write/St
 If Edit requires native Read and Read is unavailable, use `ctx_edit(path, old_string, new_string)` instead.
 Write, Delete, Glob → use normally. NEVER loop on Edit failures — switch to ctx_edit immediately.
 <!-- /lean-ctx -->
-
-
-## Git Commit Guidelines
-
-### Co-Author Attribution (REQUIRED)
-
-**ALWAYS include BOTH co-authors on every git commit:**
-
-1. **OpenCode bot** - Always include:
-```
-Co-Authored-By: opencode <noreply@opencode.ai>
-```
-
-2. **Human author (me)** - Always include:
-```
-Co-Authored-By: Current git user name <current git user email>
-```
-
-
-### How to determine the human author:
-- Run `git config user.name` and `git config user.email` to get the current user's details
-- Use those values in the Co-Authored-By line
-
-### Commit message format:
-
-```
-<commit message>
-
-Co-Authored-By: Current git user name <current git user email>
-Co-Authored-By: opencode <noreply@opencode.ai>
-```
