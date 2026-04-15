@@ -1,5 +1,5 @@
 ---
-name: git-commit
+name: git-commit-formatting
 description: Helps with git commit messages formatting, ensuring proper co-author attribution for both the OpenCode bot and the human user.
 ---
 
