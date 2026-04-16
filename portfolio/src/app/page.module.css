@@ -7,7 +7,6 @@
 .scene {
   height: 200vh;
   position: relative;
-  content-visibility: auto;
 }
 
 .scene:first-child {
@@ -16,7 +15,8 @@
 
 .scene:nth-child(3),
 .scene:nth-child(4),
-.scene:nth-child(5) {
+.scene:nth-child(5),
+.scene:nth-child(6) {
   height: 300vh;
 }
 
@@ -48,18 +48,18 @@
     transform 0.9s var(--ease);
 }
 
-.textWrap.visible > * {
+.textWrap:global(.visible) > * {
   opacity: 1;
   transform: translateY(0);
 }
 
-.textWrap > *:nth-child(2) { transition-delay: 0.1s; }
-.textWrap > *:nth-child(3) { transition-delay: 0.2s; }
-.textWrap > *:nth-child(4) { transition-delay: 0.3s; }
-.textWrap > *:nth-child(5) { transition-delay: 0.4s; }
-.textWrap > *:nth-child(6) { transition-delay: 0.5s; }
+.textWrap > *:nth-child(2) { transition-delay: 0.08s; }
+.textWrap > *:nth-child(3) { transition-delay: 0.22s; }
+.textWrap > *:nth-child(4) { transition-delay: 0.38s; }
+.textWrap > *:nth-child(5) { transition-delay: 0.56s; }
+.textWrap > *:nth-child(6) { transition-delay: 0.78s; }
 
-.textWrap.visible {
+.textWrap:global(.visible) {
   text-shadow:
     0 2px 40px rgba(0, 0, 0, 0.95),
     0 0 100px rgba(0, 0, 0, 0.6);
@@ -78,6 +78,18 @@
 
 .textLeft {
   margin-right: auto;
+}
+
+.textEdgeLeft {
+  margin-right: auto;
+  margin-left: 2vw;
+  max-width: 520px;
+}
+
+.textEdgeRight {
+  margin-left: auto;
+  margin-right: 2vw;
+  max-width: 520px;
 }
 
 /* ── Typography ── */
@@ -169,7 +181,7 @@
   transition: opacity 0.8s var(--ease);
 }
 
-.creativeLeft.visible {
+.creativeLeft:global(.visible) {
   opacity: 1;
 }
 
@@ -234,7 +246,8 @@
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto auto;
   gap: 0;
-  max-width: 900px;
+  column-gap: 10vw;
+  max-width: 1100px;
   width: 100%;
 }
 
@@ -296,6 +309,49 @@
   align-self: center;
 }
 
+/* ── Books List ── */
+.booksList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+.bookItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  opacity: 0;
+  transform: translateX(-60px);
+}
+
+.bookTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+}
+
+.bookAuthor {
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 300;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.booksEyebrow {
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  letter-spacing: var(--tracking-ultra);
+  text-transform: uppercase;
+  color: var(--color-arc-reactor-dim);
+  margin-bottom: 1.2rem;
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .sceneContent {
@@ -307,8 +363,11 @@
   }
 
   .textRight,
-  .textLeft {
+  .textLeft,
+  .textEdgeLeft,
+  .textEdgeRight {
     margin: 0;
+    max-width: 100%;
   }
 
   .display {
@@ -363,5 +422,47 @@
   .uWord,
   .uBody {
     opacity: 1;
+  }
+
+  .bookItem {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .sceneContent {
+    padding: 0 3vw;
+  }
+
+  .creativeLeft {
+    margin-left: -1vw;
+  }
+
+  .textEdgeLeft {
+    margin-left: 1vw;
+  }
+
+  .textEdgeRight {
+    margin-right: 1vw;
+  }
+}
+
+@media (min-width: 1440px) {
+  .sceneContent {
+    padding: 0 2vw;
+  }
+
+  .creativeLeft {
+    margin-left: -2vw;
+  }
+
+  .textEdgeLeft {
+    margin-left: 0;
+  }
+
+  .textEdgeRight {
+    margin-right: 0;
   }
 }
