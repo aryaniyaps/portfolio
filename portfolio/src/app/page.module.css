@@ -70,6 +70,17 @@
   text-align: center;
 }
 
+.scene:first-child .sceneContent {
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 8vh;
+}
+
+.scene:first-child .textWrap {
+  max-width: none;
+  width: 100%;
+}
+
 .textRight {
   margin-left: auto;
   margin-right: -3vw;

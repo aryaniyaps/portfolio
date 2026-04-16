@@ -152,6 +152,30 @@ export default function FrameCanvas() {
 
     const framesPerScene = totalFrames / sceneCount;
 
+    const SCENE_CURVES: { t: number; f: number }[][] = [
+      [{ t: 0, f: 0 }, { t: 0.2, f: 0.2 }, { t: 0.6, f: 0.625 }, { t: 1, f: 1 }],
+      [{ t: 0, f: 0 }, { t: 0.15, f: 0.2 }, { t: 0.65, f: 0.75 }, { t: 1, f: 1 }],
+      [{ t: 0, f: 0 }, { t: 0.1, f: 0.125 }, { t: 0.7, f: 0.875 }, { t: 1, f: 1 }],
+      [{ t: 0, f: 0 }, { t: 0.15, f: 0.2 }, { t: 0.6, f: 0.7 }, { t: 1, f: 1 }],
+      [{ t: 0, f: 0 }, { t: 0.2, f: 0.25 }, { t: 0.65, f: 0.75 }, { t: 1, f: 1 }],
+      [{ t: 0, f: 0 }, { t: 0.15, f: 0.2 }, { t: 0.7, f: 0.8 }, { t: 1, f: 1 }],
+      [{ t: 0, f: 0 }, { t: 0.15, f: 0.2 }, { t: 0.7, f: 0.8 }, { t: 1, f: 1 }],
+    ];
+
+    function remapProgress(sceneIndex: number, progress: number): number {
+      const curve = SCENE_CURVES[Math.min(sceneIndex, SCENE_CURVES.length - 1)];
+      for (let i = 0; i < curve.length - 1; i++) {
+        const a = curve[i];
+        const b = curve[i + 1];
+        if (progress >= a.t && progress <= b.t) {
+          const local = (progress - a.t) / (b.t - a.t);
+          const eased = local * local * (3 - 2 * local);
+          return a.f + eased * (b.f - a.f);
+        }
+      }
+      return progress;
+    }
+
     function onScroll() {
       scrollYRef.current = window.scrollY;
     }
@@ -187,8 +211,9 @@ export default function FrameCanvas() {
                   (sectionHeight - window.innerHeight)
               )
             );
+            const remapped = remapProgress(i, sectionProgress);
             accumulated =
-              i * framesPerScene + sectionProgress * framesPerScene;
+              i * framesPerScene + remapped * framesPerScene;
             break;
           }
           if (scrollY >= sectionEnd) {

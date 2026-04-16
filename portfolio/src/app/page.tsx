@@ -1,4 +1,4 @@
-import { SECTIONS, SKILL_BARS } from "@/lib/constants";
+import { SECTIONS, SKILL_BARS, BOOKS } from "@/lib/constants";
 import Loader from "@/components/Loader";
 import FrameCanvas from "@/components/FrameCanvas";
 import Navigation from "@/components/Navigation";
@@ -134,7 +134,7 @@ export default function Home() {
         <section className={styles.scene} data-scene="4">
           <div className={styles.sceneContent}>
             <div
-              className={`${styles.textWrap} ${styles.textCenter}`}
+              className={`${styles.textWrap} ${styles.textEdgeLeft}`}
               data-anim="slide"
             >
               <p className={styles.chapter}>{SECTIONS.built.chapter}</p>
@@ -148,11 +148,37 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── First Principles ── */}
+        {/* ── Reading List ── */}
         <section className={styles.scene} data-scene="5">
           <div className={styles.sceneContent}>
             <div
-              className={`${styles.textWrap} ${styles.textRight}`}
+              className={`${styles.textWrap} ${styles.textEdgeLeft}`}
+              data-anim="slide"
+            >
+              <p className={styles.chapter}>{SECTIONS.books.chapter}</p>
+              <h2 className={styles.heading}>
+                {SECTIONS.books.heading[0]}
+                <br />
+                {SECTIONS.books.heading[1]}
+              </h2>
+              <p className={styles.booksEyebrow}>{SECTIONS.books.eyebrow}</p>
+              <div className={styles.booksList} data-anim="books">
+                {BOOKS.map((book) => (
+                  <div key={book.title} className={styles.bookItem} data-book-item>
+                    <span className={styles.bookTitle}>{book.title}</span>
+                    <span className={styles.bookAuthor}>{book.author}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Conviction Casseroles ── */}
+        <section className={styles.scene} data-scene="6">
+          <div className={styles.sceneContent}>
+            <div
+              className={`${styles.textWrap} ${styles.textEdgeRight}`}
               data-anim="slide"
             >
               <p className={styles.chapter}>{SECTIONS.principles.chapter}</p>
@@ -170,7 +196,7 @@ export default function Home() {
         </section>
 
         {/* ── Let's Build ── */}
-        <section className={styles.scene} data-scene="6" id="contact">
+        <section className={styles.scene} data-scene="7" id="contact">
           <div className={styles.sceneContent}>
             <div
               className={`${styles.textWrap} ${styles.textCenter}`}
