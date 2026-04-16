@@ -404,10 +404,51 @@
 
   .uShape {
     max-width: 100%;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    column-gap: 0;
+    row-gap: 0.4rem;
+  }
+
+  .uTopLeft {
+    grid-column: 1;
+    grid-row: 1;
+    text-align: left;
+  }
+
+  .uTopRight {
+    grid-column: 1;
+    grid-row: 2;
+    text-align: left;
+  }
+
+  .uBody {
+    grid-column: 1;
+    grid-row: 3;
+    max-width: 100%;
+  }
+
+  .uMidRight {
+    grid-column: 1;
+    grid-row: 4;
+    text-align: left;
+  }
+
+  .uBotLeft {
+    grid-column: 1;
+    grid-row: 5;
+    text-align: left;
+  }
+
+  .uBotRight {
+    grid-column: 1;
+    grid-row: 6;
+    text-align: left;
   }
 
   .uWord {
     font-size: clamp(1.5rem, 8vw, 2.5rem);
+    padding: 0.15em 0;
   }
 }
 
