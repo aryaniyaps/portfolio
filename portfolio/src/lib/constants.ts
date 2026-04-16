@@ -24,7 +24,7 @@ export const SECTIONS = {
   hero: {
     eyebrow: "TECHNICAL FOUNDER \u00B7 BUILDER \u00B7 OPERATOR",
     heading: ["ARYAN", "IYAPPAN"],
-    tagline: "Building enduring companies from first principles",
+    tagline: "Building enduring ideas from first principles",
   },
   about: {
     chapter: "I",
@@ -49,7 +49,7 @@ export const SECTIONS = {
   books: {
     chapter: "IV",
     heading: ["Reading", "List"],
-    eyebrow: "FOUNDATIONAL TEXTS",
+    eyebrow: "MY HOLY SCRIPTURES",
   },
   principles: {
     chapter: "V",

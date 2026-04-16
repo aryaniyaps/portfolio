@@ -26,7 +26,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Aryan Iyappan — Technical Founder",
   description:
-    "Building enduring companies from first principles. Technical founder, systems architect, and operator.",
+    "Building enduring ideas from first principles. Technical founder, systems architect, and operator.",
   icons: {
     icon: [
       { url: "/favicons/favicon-32x32.png", sizes: "32x32", type: "image/png" },
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Aryan Iyappan — Technical Founder",
     description:
-      "Building enduring companies from first principles. Technical founder, systems architect, and operator.",
+      "Building enduring ideas from first principles. Technical founder, systems architect, and operator.",
     type: "website",
   },
 };
