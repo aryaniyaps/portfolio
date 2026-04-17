@@ -97,7 +97,7 @@ export default function ScrollAnimator() {
               gsap.fromTo(
                 uWords[0],
                 { opacity: 0, x: -80, rotateZ: -5 },
-                { opacity: 1, x: 0, rotateZ: 0, duration: 0.8, ease: "power3.out" }
+                { opacity: 1, x: 0, rotateZ: 0, duration: 0.6, ease: "power3.out" }
               );
               gsap.fromTo(
                 uWords[1],
@@ -106,43 +106,43 @@ export default function ScrollAnimator() {
                   opacity: 1,
                   x: 0,
                   rotateZ: 0,
-                  duration: 0.8,
+                  duration: 0.6,
                   ease: "power3.out",
-                  delay: 0.1,
+                  delay: 0.06,
                 }
               );
               if (uBody) {
                 gsap.fromTo(
                   uBody,
                   { opacity: 0, y: 20 },
-                  { opacity: 1, y: 0, duration: 0.7, ease: "power2.out", delay: 0.32 }
+                  { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", delay: 0.12 }
                 );
               }
               if (uWords[2]) {
                 gsap.fromTo(
                   uWords[2],
-                  { opacity: 0, y: -50 },
-                  { opacity: 1, y: 0, duration: 0.7, ease: "power3.out", delay: 0.44 }
+                  { opacity: 0, y: -30 },
+                  { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", delay: 0.18 }
                 );
               }
               if (uWords[3]) {
                 gsap.fromTo(
                   uWords[3],
-                  { opacity: 0, y: 60 },
-                  { opacity: 1, y: 0, duration: 0.7, ease: "power3.out", delay: 0.52 }
+                  { opacity: 0, y: 30 },
+                  { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", delay: 0.24 }
                 );
               }
               if (uWords[4]) {
                 gsap.fromTo(
                   uWords[4],
-                  { opacity: 0, scale: 0.3, rotateZ: -180 },
+                  { opacity: 0, scale: 0.9, rotateZ: -12 },
                   {
                     opacity: 1,
                     scale: 1,
                     rotateZ: 0,
-                    duration: 1,
-                    ease: "elastic.out(1,0.5)",
-                    delay: 0.58,
+                    duration: 0.6,
+                    ease: "power3.out",
+                    delay: 0.30,
                   }
                 );
               }

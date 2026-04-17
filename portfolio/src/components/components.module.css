@@ -7,9 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition:
-    opacity 1s var(--ease),
-    visibility 1s;
+  transition: opacity 1s var(--ease);
 }
 
 .loader.done {
@@ -129,8 +127,10 @@
   transition: opacity 0.3s var(--ease);
 }
 
-.navBrand:hover {
-  opacity: 1;
+@media (hover: hover) and (pointer: fine) {
+  .navBrand:hover {
+    opacity: 1;
+  }
 }
 
 .navTagline {
@@ -178,7 +178,7 @@
   letter-spacing: 0.08em;
   text-decoration: none;
   border-radius: 12px;
-  transition: all 0.25s var(--ease);
+  transition: color 0.25s var(--ease), background 0.25s var(--ease);
 }
 
 .navLink:hover {
@@ -249,8 +249,10 @@
   transition: color 0.3s var(--ease);
 }
 
-.footerLinks a:hover {
-  color: var(--color-arc-reactor);
+@media (hover: hover) and (pointer: fine) {
+  .footerLinks a:hover {
+    color: var(--color-arc-reactor);
+  }
 }
 
 /* ── Responsive ── */

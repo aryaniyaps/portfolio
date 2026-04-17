@@ -45,8 +45,8 @@
   opacity: 0;
   transform: translateY(28px);
   transition:
-    opacity 0.9s var(--ease),
-    transform 0.9s var(--ease);
+    opacity 0.5s var(--ease),
+    transform 0.5s var(--ease);
 }
 
 .textWrap:global(.visible) > * {
@@ -206,7 +206,7 @@
   gap: 1rem;
   opacity: 0;
   transform: translateX(-40px);
-  transition: all 0.5s var(--ease);
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
 }
 
 .skillBar.isVisible {
@@ -347,8 +347,8 @@
   opacity: 0;
   transform: translateY(28px);
   transition:
-    opacity 0.9s var(--ease),
-    transform 0.9s var(--ease);
+    opacity 0.5s var(--ease),
+    transform 0.5s var(--ease);
 }
 
 .projectsHeader:global(.visible) > * {
@@ -405,6 +405,10 @@
     transform: translateY(-2px);
     box-shadow: 0 0 30px var(--color-arc-reactor-glow), 0 4px 20px rgba(0, 0, 0, 0.4);
   }
+}
+
+.projectCard:active {
+  transform: scale(0.97);
 }
 
 .projectCard[data-expanded="true"] {
@@ -541,6 +545,11 @@
 
 .projectLink:hover {
   opacity: 0.7;
+}
+
+.projectLink:active {
+  transform: scale(0.97);
+  opacity: 0.6;
 }
 
 /* ── Responsive ── */
