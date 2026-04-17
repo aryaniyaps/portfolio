@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Orbitron, Rajdhani, JetBrains_Mono } from "next/font/google";
+import { Orbitron, Rajdhani } from "next/font/google";
 import "./globals.css";
 
 const orbitron = Orbitron({
@@ -16,17 +16,10 @@ const rajdhani = Rajdhani({
   display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-mono",
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  display: "swap",
-});
-
 export const metadata: Metadata = {
   title: "Aryan Iyappan — Technical Founder",
   description:
-    "Building enduring ideas from first principles. Technical founder, systems architect, and operator.",
+    "Making sense of complexity, one system at a time. Technical founder, systems architect, and operator.",
   icons: {
     icon: [
       { url: "/favicons/favicon-32x32.png", sizes: "32x32", type: "image/png" },
@@ -51,7 +44,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Aryan Iyappan — Technical Founder",
     description:
-      "Building enduring ideas from first principles. Technical founder, systems architect, and operator.",
+      "Making sense of complexity, one system at a time. Technical founder, systems architect, and operator.",
     type: "website",
   },
 };
@@ -64,7 +57,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${orbitron.variable} ${rajdhani.variable} ${jetbrainsMono.variable}`}
+      className={`${orbitron.variable} ${rajdhani.variable}`}
     >
       <body>{children}</body>
     </html>

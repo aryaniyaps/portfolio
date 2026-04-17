@@ -165,7 +165,7 @@ export default function ScrollAnimator() {
         });
       }
 
-      // Text reveal for scenes 3, 4, 5, 6
+      // Text reveal for Conviction Casseroles and Contact
       function setupTextReveal(sceneEl: Element, viewportPct: number = 75) {
         const tw = sceneEl.querySelector('[data-anim="slide"]');
         if (!tw) return;
@@ -180,19 +180,18 @@ export default function ScrollAnimator() {
         });
       }
 
-      if (scenes[3]) setupTextReveal(scenes[3], 75);
-      if (scenes[5]) setupTextReveal(scenes[5], 75);
-      if (scenes[6]) setupTextReveal(scenes[6], 72);
+      if (scenes[4]) setupTextReveal(scenes[4], 75);
+      if (scenes[5]) setupTextReveal(scenes[5], 72);
 
-      // Books stagger animation (scene 4)
-      const booksScene = scenes[4];
-      if (booksScene) {
-        const bookItems = booksScene.querySelectorAll('[data-book-item]');
-        const tw4 = booksScene.querySelector('[data-anim="slide"]');
+// Project cards stagger animation (scene 4 → scenes[3])
+      const projectsScene = scenes[3];
+      if (projectsScene) {
+        const projectCards = projectsScene.querySelectorAll('[data-project-card]');
+        const tw4 = projectsScene.querySelector('[data-anim="slide"]');
 
         if (tw4) {
           ScrollTrigger.create({
-            trigger: booksScene,
+            trigger: projectsScene,
             start: "top 72%",
             end: "bottom 25%",
             onEnter: () => tw4.classList.add("visible"),
@@ -202,40 +201,40 @@ export default function ScrollAnimator() {
           });
         }
 
-        if (bookItems.length) {
-          let booksPlayed = false;
+        if (projectCards.length) {
+          let projectsPlayed = false;
           ScrollTrigger.create({
-            trigger: booksScene,
+            trigger: projectsScene,
             start: "top 65%",
             end: "bottom 25%",
             onEnter: () => {
-              if (!booksPlayed) {
-                booksPlayed = true;
-                bookItems.forEach((item, i) => {
+              if (!projectsPlayed) {
+                projectsPlayed = true;
+                projectCards.forEach((card, i) => {
                   gsap.fromTo(
-                    item,
-                    { opacity: 0, x: -60 },
-                    { opacity: 1, x: 0, duration: 0.5, ease: "power3.out", delay: i * 0.12 }
+                    card,
+                    { opacity: 0, y: 30 },
+                    { opacity: 1, y: 0, duration: 0.5, ease: "power3.out", delay: i * 0.08 }
                   );
                 });
               }
             },
             onLeave: () => {
-              gsap.to(bookItems, { opacity: 0, duration: 0.3 });
-              booksPlayed = false;
+              gsap.to(projectCards, { opacity: 0, duration: 0.3 });
+              projectsPlayed = false;
             },
             onEnterBack: () => {
-              gsap.to(bookItems, { opacity: 1, duration: 0.35 });
+              gsap.to(projectCards, { opacity: 1, duration: 0.35 });
             },
             onLeaveBack: () => {
-              gsap.to(bookItems, { opacity: 0, duration: 0.25 });
-              booksPlayed = false;
+              gsap.to(projectCards, { opacity: 0, duration: 0.25 });
+              projectsPlayed = false;
             },
           });
         }
       }
 
-// Contact is already handled above by setupTextReveal(scenes[6])
+// Contact is already handled above by setupTextReveal(scenes[5])
      },
     { scope: containerRef }
   );

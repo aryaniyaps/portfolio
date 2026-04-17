@@ -9,6 +9,30 @@ interface FrameManifest {
   height: number;
 }
 
+const SCENE_CURVES: { t: number; f: number }[][] = [
+  [{ t: 0, f: 0 }, { t: 0.2, f: 0.2 }, { t: 0.6, f: 0.625 }, { t: 1, f: 1 }],
+  [{ t: 0, f: 0 }, { t: 0.15, f: 0.2 }, { t: 0.65, f: 0.75 }, { t: 1, f: 1 }],
+  [{ t: 0, f: 0 }, { t: 0.1, f: 0.125 }, { t: 0.7, f: 0.875 }, { t: 1, f: 1 }],
+  [{ t: 0, f: 0 }, { t: 0.15, f: 0.2 }, { t: 0.6, f: 0.7 }, { t: 1, f: 1 }],
+  [{ t: 0, f: 0 }, { t: 0.2, f: 0.25 }, { t: 0.65, f: 0.75 }, { t: 1, f: 1 }],
+  [{ t: 0, f: 0 }, { t: 0.15, f: 0.2 }, { t: 0.7, f: 0.8 }, { t: 1, f: 1 }],
+  [{ t: 0, f: 0 }, { t: 0.15, f: 0.2 }, { t: 0.7, f: 0.8 }, { t: 1, f: 1 }],
+];
+
+function remapProgress(sceneIndex: number, progress: number): number {
+  const curve = SCENE_CURVES[Math.min(sceneIndex, SCENE_CURVES.length - 1)];
+  for (let i = 0; i < curve.length - 1; i++) {
+    const a = curve[i];
+    const b = curve[i + 1];
+    if (progress >= a.t && progress <= b.t) {
+      const local = (progress - a.t) / (b.t - a.t);
+      const eased = local * local * (3 - 2 * local);
+      return a.f + eased * (b.f - a.f);
+    }
+  }
+  return progress;
+}
+
 export default function FrameCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const framesRef = useRef<ImageBitmap[]>([]);
@@ -16,6 +40,7 @@ export default function FrameCanvas() {
   const currentFrameRef = useRef(-1);
   const scrollYRef = useRef(0);
   const dimsRef = useRef({ w: 0, h: 0 });
+  const vigGradRef = useRef<CanvasGradient | null>(null);
   const [loaded, setLoaded] = useState(false);
 
   const renderFrame = useCallback((fi: number) => {
@@ -25,12 +50,6 @@ export default function FrameCanvas() {
     if (!ctx) return;
 
     const { w, h } = dimsRef.current;
-    const cx = w / 2;
-    const cy = h / 2;
-
-    ctx.fillStyle = "#0a0a0a";
-    ctx.fillRect(0, 0, w, h);
-
     const manifest = manifestRef.current;
     const frames = framesRef.current;
     if (!manifest || frames.length === 0) return;
@@ -38,6 +57,9 @@ export default function FrameCanvas() {
     const idx = Math.round(Math.max(0, Math.min(fi, manifest.frameCount - 1)));
     const src = frames[idx];
     if (!src) return;
+
+    ctx.fillStyle = "#0a0a0a";
+    ctx.fillRect(0, 0, w, h);
 
     const sw = src.width;
     const sh = src.height;
@@ -48,9 +70,13 @@ export default function FrameCanvas() {
     const dy = (h - dh) / 2;
     ctx.drawImage(src, dx, dy, dw, dh);
 
-    const vig = ctx.createRadialGradient(cx, cy, w * 0.15, cx, cy, w * 0.75);
-    vig.addColorStop(0, "rgba(0,0,0,0)");
-    vig.addColorStop(1, "rgba(0,0,0,0.75)");
+    let vig = vigGradRef.current;
+    if (!vig) {
+      vig = ctx.createRadialGradient(w / 2, h / 2, w * 0.15, w / 2, h / 2, w * 0.75);
+      vig.addColorStop(0, "rgba(0,0,0,0)");
+      vig.addColorStop(1, "rgba(0,0,0,0.75)");
+      vigGradRef.current = vig;
+    }
     ctx.fillStyle = vig;
     ctx.fillRect(0, 0, w, h);
 
@@ -70,6 +96,7 @@ export default function FrameCanvas() {
     const ctx = canvas.getContext("2d", { alpha: false });
     if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     dimsRef.current = { w, h };
+    vigGradRef.current = null;
     if (currentFrameRef.current >= 0) {
       renderFrame(currentFrameRef.current);
     }
@@ -109,20 +136,29 @@ export default function FrameCanvas() {
           for (let j = i; j < Math.min(i + batchSize, manifest.frameCount); j++) {
             const padded = String(j + 1).padStart(4, "0");
             batch.push(
-              fetch(`/frames/frame_${padded}.png`)
+              fetch(`/frames/frame_${padded}.webp`)
                 .then((r) => r.blob())
                 .then((blob) => createImageBitmap(blob))
+                .catch(() =>
+                  fetch(`/frames/frame_${padded}.png`)
+                    .then((r) => r.blob())
+                    .then((blob) => createImageBitmap(blob))
+                )
             );
           }
           const bitmaps = await Promise.all(batch);
           images.push(...bitmaps);
+
+          if (i === 0 && !cancelled) {
+            framesRef.current = images;
+            setLoaded(true);
+            resize();
+            renderFrame(0);
+          }
         }
 
         if (cancelled) return;
         framesRef.current = images;
-        setLoaded(true);
-        resize();
-        renderFrame(0);
       } catch {
         if (!cancelled) renderFallback();
       }
@@ -151,30 +187,6 @@ export default function FrameCanvas() {
     if (sceneCount === 0) return;
 
     const framesPerScene = totalFrames / sceneCount;
-
-    const SCENE_CURVES: { t: number; f: number }[][] = [
-      [{ t: 0, f: 0 }, { t: 0.2, f: 0.2 }, { t: 0.6, f: 0.625 }, { t: 1, f: 1 }],
-      [{ t: 0, f: 0 }, { t: 0.15, f: 0.2 }, { t: 0.65, f: 0.75 }, { t: 1, f: 1 }],
-      [{ t: 0, f: 0 }, { t: 0.1, f: 0.125 }, { t: 0.7, f: 0.875 }, { t: 1, f: 1 }],
-      [{ t: 0, f: 0 }, { t: 0.15, f: 0.2 }, { t: 0.6, f: 0.7 }, { t: 1, f: 1 }],
-      [{ t: 0, f: 0 }, { t: 0.2, f: 0.25 }, { t: 0.65, f: 0.75 }, { t: 1, f: 1 }],
-      [{ t: 0, f: 0 }, { t: 0.15, f: 0.2 }, { t: 0.7, f: 0.8 }, { t: 1, f: 1 }],
-      [{ t: 0, f: 0 }, { t: 0.15, f: 0.2 }, { t: 0.7, f: 0.8 }, { t: 1, f: 1 }],
-    ];
-
-    function remapProgress(sceneIndex: number, progress: number): number {
-      const curve = SCENE_CURVES[Math.min(sceneIndex, SCENE_CURVES.length - 1)];
-      for (let i = 0; i < curve.length - 1; i++) {
-        const a = curve[i];
-        const b = curve[i + 1];
-        if (progress >= a.t && progress <= b.t) {
-          const local = (progress - a.t) / (b.t - a.t);
-          const eased = local * local * (3 - 2 * local);
-          return a.f + eased * (b.f - a.f);
-        }
-      }
-      return progress;
-    }
 
     function onScroll() {
       scrollYRef.current = window.scrollY;
@@ -238,5 +250,10 @@ export default function FrameCanvas() {
     };
   }, [loaded, renderFrame]);
 
-  return <canvas ref={canvasRef} className={styles.frameCanvas} />;
+  return (
+    <div className={styles.frameCanvasWrap}>
+      <canvas ref={canvasRef} className={styles.frameCanvas} />
+      <div className={styles.frameVignette} />
+    </div>
+  );
 }

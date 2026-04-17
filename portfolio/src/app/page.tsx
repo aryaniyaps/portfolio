@@ -1,9 +1,10 @@
-import { SECTIONS, SKILL_BARS, BOOKS } from "@/lib/constants";
+import { SECTIONS, SKILL_BARS_GROUP_1, SKILL_BARS_GROUP_2, SKILL_BARS_GROUP_3 } from "@/lib/constants";
 import Loader from "@/components/Loader";
 import FrameCanvas from "@/components/FrameCanvas";
 import Navigation from "@/components/Navigation";
 import ScrollAnimator from "@/components/ScrollAnimator";
 import Footer from "@/components/Footer";
+import ProjectsCarousel from "@/components/ProjectsCarousel";
 import styles from "./page.module.css";
 
 export default function Home() {
@@ -38,7 +39,7 @@ export default function Home() {
           <div className={styles.sceneContent}>
             <div className={styles.sceneSplit}>
               <div className={styles.creativeLeft} data-anim="creative">
-                {SKILL_BARS.filter((_, i) => i < 2).map((bar) => (
+                {SKILL_BARS_GROUP_1.map((bar) => (
                   <div
                     key={bar.label}
                     className={styles.skillBar}
@@ -53,7 +54,7 @@ export default function Home() {
                   </div>
                 ))}
                 <div className={styles.skillAccent}>&#9670;</div>
-                {SKILL_BARS.filter((_, i) => i >= 2 && i < 4).map((bar) => (
+                {SKILL_BARS_GROUP_2.map((bar) => (
                   <div
                     key={bar.label}
                     className={styles.skillBar}
@@ -68,7 +69,7 @@ export default function Home() {
                   </div>
                 ))}
                 <div className={styles.skillAccent}>&#8734;</div>
-                {SKILL_BARS.filter((_, i) => i >= 4).map((bar) => (
+                {SKILL_BARS_GROUP_3.map((bar) => (
                   <div
                     key={bar.label}
                     className={styles.skillBar}
@@ -130,52 +131,21 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── What I've Built ── */}
-        <section className={styles.scene} data-scene="4">
-          <div className={styles.sceneContent}>
-            <div
-              className={`${styles.textWrap} ${styles.textEdgeLeft}`}
-              data-anim="slide"
-            >
-              <p className={styles.chapter}>{SECTIONS.built.chapter}</p>
+        {/* ── Projects ── */}
+        <section className={styles.scene} data-scene="4" id="projects">
+          <div className={styles.projectsScene}>
+            <div className={styles.projectsHeader} data-anim="slide">
+              <p className={styles.chapter}>{SECTIONS.projects.chapter}</p>
               <h2 className={styles.heading}>
-                {SECTIONS.built.heading[0]}
-                <br />
-                {SECTIONS.built.heading[1]}
+                {SECTIONS.projects.heading[0]}
               </h2>
-              <p className={styles.body}>{SECTIONS.built.body}</p>
             </div>
-          </div>
-        </section>
-
-        {/* ── Reading List ── */}
-        <section className={styles.scene} data-scene="5">
-          <div className={styles.sceneContent}>
-            <div
-              className={`${styles.textWrap} ${styles.textEdgeLeft}`}
-              data-anim="slide"
-            >
-              <p className={styles.chapter}>{SECTIONS.books.chapter}</p>
-              <h2 className={styles.heading}>
-                {SECTIONS.books.heading[0]}
-                <br />
-                {SECTIONS.books.heading[1]}
-              </h2>
-              <p className={styles.booksEyebrow}>{SECTIONS.books.eyebrow}</p>
-              <div className={styles.booksList} data-anim="books">
-                {BOOKS.map((book) => (
-                  <div key={book.title} className={styles.bookItem} data-book-item>
-                    <span className={styles.bookTitle}>{book.title}</span>
-                    <span className={styles.bookAuthor}>{book.author}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <ProjectsCarousel />
           </div>
         </section>
 
         {/* ── Conviction Casseroles ── */}
-        <section className={styles.scene} data-scene="6">
+        <section className={styles.scene} data-scene="5">
           <div className={styles.sceneContent}>
             <div
               className={`${styles.textWrap} ${styles.textEdgeRight}`}
@@ -196,7 +166,7 @@ export default function Home() {
         </section>
 
         {/* ── Let's Build ── */}
-        <section className={styles.scene} data-scene="7" id="contact">
+        <section className={styles.scene} data-scene="6" id="contact">
           <div className={styles.sceneContent}>
             <div
               className={`${styles.textWrap} ${styles.textCenter}`}

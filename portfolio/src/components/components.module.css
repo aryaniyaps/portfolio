@@ -60,16 +60,30 @@
   }
 }
 
-/* ── Canvas ── */
-.frameCanvas {
+/* ── Frame Background ── */
+.frameCanvasWrap {
   position: fixed;
   inset: 0;
-  width: 100%;
-  height: 100%;
   z-index: 1;
   background: var(--canvas-bg);
+  overflow: hidden;
+}
+
+.frameCanvas {
+  width: 100%;
+  height: 100%;
   opacity: 0.6;
-  will-change: transform;
+}
+
+.frameVignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 15%,
+    rgba(0, 0, 0, 0.75) 75%
+  );
+  pointer-events: none;
 }
 
 /* ── Navigation ── */
@@ -149,7 +163,7 @@
   align-items: center;
   gap: 0.35rem;
   padding: 0.5rem 1rem;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.72);
   font-family: var(--font-body);
   font-size: 0.72rem;
   font-weight: 400;

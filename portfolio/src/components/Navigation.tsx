@@ -1,22 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { NAV_LINKS } from "@/lib/constants";
 import styles from "@/components/components.module.css";
 
 export default function Navigation() {
-  const [scrolled, setScrolled] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
-    function onScroll() {
-      setScrolled(window.scrollY > 100);
-    }
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+  const onScroll = useCallback(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+    const scrolled = window.scrollY > 100;
+    nav.classList.toggle(styles.scrolled, scrolled);
   }, []);
 
+  useEffect(() => {
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [onScroll]);
+
   return (
-    <nav className={`${styles.nav} ${scrolled ? styles.scrolled : ""}`}>
+    <nav ref={navRef} className={styles.nav}>
       <div className={styles.navLeft}>
         <a href="#" className={styles.navBrand}>
           ARYAN IYAPPAN
@@ -27,7 +31,11 @@ export default function Navigation() {
         {NAV_LINKS.map((link, i) => (
           <div key={link.href} style={{ display: "contents" }}>
             {i > 0 && <div className={styles.navDivider} />}
-            <a href={link.href} className={styles.navLink}>
+            <a
+              href={link.href}
+              className={styles.navLink}
+              {...(link.external && { target: "_blank", rel: "noopener noreferrer" })}
+            >
               {link.label}
             </a>
           </div>
