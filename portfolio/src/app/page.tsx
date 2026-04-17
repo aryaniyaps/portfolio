@@ -1,6 +1,7 @@
 import { SECTIONS, SKILL_BARS_GROUP_1, SKILL_BARS_GROUP_2, SKILL_BARS_GROUP_3 } from "@/lib/constants";
 import Loader from "@/components/Loader";
 import FrameCanvas from "@/components/FrameCanvas";
+import HeroInteraction from "@/components/HeroInteraction";
 import Navigation from "@/components/Navigation";
 import ScrollAnimator from "@/components/ScrollAnimator";
 import Footer from "@/components/Footer";
@@ -12,6 +13,7 @@ export default function Home() {
     <>
       <Loader />
       <FrameCanvas />
+      <HeroInteraction />
       <Navigation />
       <ScrollAnimator />
 
