@@ -11,9 +11,9 @@ export default function Footer() {
           </span>
         </div>
         <div className={styles.footerLinks}>
-          <a href="https://github.com/aryaniyaps">GitHub</a>
-          <a href="https://linkedin.com/in/aryaniyaps">LinkedIn</a>
-          <a href="mailto:aryaniyaps@gmail.com">Email</a>
+          <a href="https://github.com/aryaniyaps" rel="me noopener noreferrer" target="_blank">GitHub</a>
+          <a href="https://linkedin.com/in/aryaniyaps" rel="me noopener noreferrer" target="_blank">LinkedIn</a>
+          <a href="mailto:aryaniyaps@gmail.com" rel="me">Email</a>
         </div>
       </div>
     </footer>

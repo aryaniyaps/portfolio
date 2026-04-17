@@ -19,7 +19,7 @@ export default function Home() {
 
       <main className={styles.sections}>
         {/* ── Hero ── */}
-        <section className={styles.scene} data-scene="1">
+        <section className={styles.scene} data-scene="1" aria-label="Introduction">
           <div className={styles.sceneContent}>
             <div
               className={`${styles.textWrap} ${styles.textCenter}`}
@@ -37,10 +37,10 @@ export default function Home() {
         </section>
 
         {/* ── The Builder ── */}
-        <section className={styles.scene} data-scene="2" id="about">
+        <section className={styles.scene} data-scene="2" id="about" aria-label="About Aryan Iyappan">
           <div className={styles.sceneContent}>
             <div className={styles.sceneSplit}>
-              <div className={styles.creativeLeft} data-anim="creative">
+              <div className={styles.creativeLeft} data-anim="creative" aria-hidden="true">
                 {SKILL_BARS_GROUP_1.map((bar) => (
                   <div
                     key={bar.label}
@@ -90,7 +90,7 @@ export default function Home() {
                 className={`${styles.textWrap} ${styles.textRight}`}
                 data-anim="slide"
               >
-                <p className={styles.chapter}>{SECTIONS.about.chapter}</p>
+                <span className={styles.chapter}>{SECTIONS.about.chapter}</span>
                 <h2 className={styles.heading}>
                   {SECTIONS.about.heading[0]}
                   <br />
@@ -106,10 +106,10 @@ export default function Home() {
         </section>
 
         {/* ── Philosophy (U-Shape) ── */}
-        <section className={styles.scene} data-scene="3" id="work">
+        <section className={styles.scene} data-scene="3" id="work" aria-label="Work philosophy">
           <div className={styles.sceneContent}>
             <div className={styles.uShapeWrap} id="uShapeSection">
-              <div className={styles.uShape}>
+              <div className={styles.uShape} role="heading" aria-level={2}>
                 <div className={`${styles.uWord} ${styles.uTopLeft}`} data-u-word>
                   {SECTIONS.philosophy.topLeft}
                 </div>
@@ -134,10 +134,10 @@ export default function Home() {
         </section>
 
         {/* ── Projects ── */}
-        <section className={styles.scene} data-scene="4" id="projects">
+        <section className={styles.scene} data-scene="4" id="projects" aria-label="Projects">
           <div className={styles.projectsScene}>
             <div className={styles.projectsHeader} data-anim="slide">
-              <p className={styles.chapter}>{SECTIONS.projects.chapter}</p>
+              <span className={styles.chapter}>{SECTIONS.projects.chapter}</span>
               <h2 className={styles.heading}>
                 {SECTIONS.projects.heading[0]}
               </h2>
@@ -147,13 +147,13 @@ export default function Home() {
         </section>
 
         {/* ── Conviction Casseroles ── */}
-        <section className={styles.scene} data-scene="5">
+        <section className={styles.scene} data-scene="5" aria-label="Principles and convictions">
           <div className={styles.sceneContent}>
             <div
               className={`${styles.textWrap} ${styles.textEdgeRight}`}
               data-anim="slide"
             >
-              <p className={styles.chapter}>{SECTIONS.principles.chapter}</p>
+              <span className={styles.chapter}>{SECTIONS.principles.chapter}</span>
               <h2 className={styles.heading}>
                 {SECTIONS.principles.heading[0]}
                 <br />
@@ -168,13 +168,13 @@ export default function Home() {
         </section>
 
         {/* ── Let's Build ── */}
-        <section className={styles.scene} data-scene="6" id="contact">
+        <section className={styles.scene} data-scene="6" id="contact" aria-label="Contact">
           <div className={styles.sceneContent}>
             <div
               className={`${styles.textWrap} ${styles.textCenter}`}
               data-anim="slide"
             >
-              <p className={styles.chapter}>{SECTIONS.contact.chapter}</p>
+              <span className={styles.chapter}>{SECTIONS.contact.chapter}</span>
               <h2 className={styles.heading}>
                 {SECTIONS.contact.heading[0]}
                 <br />
