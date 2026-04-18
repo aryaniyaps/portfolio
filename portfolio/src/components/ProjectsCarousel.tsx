@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { PROJECTS } from "@/lib/constants";
-import ProjectCard from "@/components/ProjectCard";
+import type { Project } from "@/lib/constants";
+import ProjectCard from "./ProjectCard";
+import ProjectWalkthrough from "./ProjectWalkthrough";
 import styles from "@/app/page.module.css";
 
 export default function ProjectsCarousel() {
@@ -10,6 +12,7 @@ export default function ProjectsCarousel() {
   const isDragging = useRef(false);
   const startX = useRef(0);
   const scrollLeftStart = useRef(0);
+  const [activeProject, setActiveProject] = useState<Project | null>(null);
 
   useEffect(() => {
     const el = carouselRef.current;
@@ -58,15 +61,28 @@ export default function ProjectsCarousel() {
   }, []);
 
   return (
-    <div
-      ref={carouselRef}
-      className={styles.projectCarousel}
-      data-anim="projects"
-      data-carousel
-    >
-      {PROJECTS.map((project) => (
-        <ProjectCard key={project.title} project={project} />
-      ))}
-    </div>
+    <>
+      <div
+        ref={carouselRef}
+        className={styles.projectCarousel}
+        data-anim="projects"
+        data-carousel
+      >
+        {PROJECTS.map((project) => (
+          <ProjectCard
+            key={project.title}
+            project={project}
+            onOpenWalkthrough={setActiveProject}
+          />
+        ))}
+      </div>
+
+      {activeProject && (
+        <ProjectWalkthrough
+          project={activeProject}
+          onClose={() => setActiveProject(null)}
+        />
+      )}
+    </>
   );
 }

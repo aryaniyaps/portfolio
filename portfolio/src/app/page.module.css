@@ -552,6 +552,352 @@
   opacity: 0.6;
 }
 
+.projectTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+}
+
+.projectTag {
+  font-family: var(--font-display);
+  font-size: 0.5625rem;
+  font-weight: 500;
+  letter-spacing: var(--tracking-ultra);
+  text-transform: uppercase;
+  color: var(--color-arc-reactor);
+  background: rgba(0, 212, 255, 0.06);
+  border: 1px solid rgba(0, 212, 255, 0.18);
+  padding: 0.2em 0.6em;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/* ── Walkthrough Overlay ── */
+.walkthroughOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(9, 9, 11, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  animation: fadeIn 0.3s var(--ease);
+}
+
+.walkthroughPanel {
+  width: 100%;
+  max-width: 560px;
+  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6);
+  overflow-y: auto;
+}
+
+.walkthroughHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.walkthroughProjectInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.walkthroughProjectTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-title);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--color-text-primary);
+}
+
+.walkthroughProjectMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-arc-reactor);
+}
+
+.walkthroughSep {
+  color: var(--color-text-tertiary);
+}
+
+.walkthroughClose {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  transition:
+    border-color 0.2s var(--ease),
+    color 0.2s var(--ease);
+}
+
+.walkthroughClose:hover {
+  border-color: var(--color-arc-reactor-dim);
+  color: var(--color-text-primary);
+}
+
+.walkthroughStepIndicator {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  margin-bottom: var(--space-6);
+  font-family: var(--font-display);
+  font-size: var(--text-hud);
+  letter-spacing: var(--tracking-ultra);
+}
+
+.walkthroughStepCurrent {
+  color: var(--color-arc-reactor);
+  font-weight: 500;
+}
+
+.walkthroughStepSep {
+  color: var(--color-text-tertiary);
+  font-weight: 300;
+}
+
+.walkthroughStepTotal {
+  color: var(--color-text-tertiary);
+  font-weight: 300;
+}
+
+.walkthroughContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.walkthroughContent.walkthroughSlideRight {
+  animation: stepSlideFromRight 0.4s var(--ease) both;
+}
+
+.walkthroughContent.walkthroughSlideLeft {
+  animation: stepSlideFromLeft 0.4s var(--ease) both;
+}
+
+.walkthroughVisual {
+  width: 100%;
+  aspect-ratio: 320 / 192;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.walkthroughVisual :global(svg) {
+  width: 100%;
+  height: 100%;
+}
+
+.walkthroughHudSvg {
+  width: 100%;
+  height: 100%;
+}
+
+.walkthroughHudBg {
+  fill: var(--color-bg);
+}
+
+.walkthroughHudIdle {
+  color: var(--color-arc-reactor-dim);
+}
+
+.walkthroughHudActive {
+  color: var(--color-arc-reactor);
+}
+
+.walkthroughHudLabel {
+  font-family: var(--font-display);
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  fill: var(--color-arc-reactor-dim);
+}
+
+.walkthroughHudNodeLabel {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 500;
+  fill: var(--color-arc-reactor-dim);
+  letter-spacing: 0.1em;
+}
+
+.walkthroughText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.walkthroughInnovationTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-title);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--color-text-primary);
+  line-height: 1.3;
+}
+
+.walkthroughInnovationDesc {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 400;
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-secondary);
+  max-width: 480px;
+}
+
+.walkthroughInnovationTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.walkthroughTag {
+  font-family: var(--font-display);
+  font-size: var(--text-hud);
+  font-weight: 500;
+  letter-spacing: var(--tracking-ultra);
+  text-transform: uppercase;
+  color: var(--color-arc-reactor);
+  background: rgba(0, 212, 255, 0.06);
+  border: 1px solid rgba(0, 212, 255, 0.18);
+  padding: 0.3em 0.8em;
+  line-height: 1.4;
+}
+
+.walkthroughNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-8);
+  gap: var(--space-4);
+}
+
+.walkthroughNavBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition:
+    border-color 0.2s var(--ease),
+    color 0.2s var(--ease);
+  flex-shrink: 0;
+}
+
+.walkthroughNavBtn:hover:not(:disabled) {
+  border-color: var(--color-arc-reactor-dim);
+  color: var(--color-arc-reactor);
+}
+
+.walkthroughNavBtn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.walkthroughNavBtn:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.walkthroughDots {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  justify-content: center;
+}
+
+.walkthroughDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-strong);
+  cursor: pointer;
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+  padding: 0;
+}
+
+.walkthroughDot:hover {
+  background: var(--color-arc-reactor-dim);
+}
+
+.walkthroughDotActive {
+  background: var(--color-arc-reactor);
+  border-color: var(--color-arc-reactor);
+  box-shadow: 0 0 8px var(--color-arc-reactor-glow);
+}
+
+/* ── Keyframes ── */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes stepFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes stepSlideFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes stepSlideFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .sceneContent {
@@ -656,6 +1002,27 @@
     font-size: clamp(1.5rem, 8vw, 2.5rem);
     padding: 0.15em 0;
   }
+
+  .walkthroughPanel {
+    padding: var(--space-4);
+    max-width: 100%;
+  }
+
+  .walkthroughProjectTitle {
+    font-size: var(--text-body);
+  }
+
+  .walkthroughInnovationTitle {
+    font-size: var(--text-small);
+  }
+
+  .walkthroughInnovationDesc {
+    font-size: var(--text-small);
+  }
+
+  .walkthroughNav {
+    margin-top: var(--space-6);
+  }
 }
 
 /* ── Tablet ── */
@@ -709,6 +1076,27 @@
 
   .projectExpandWrap,
   .projectChevron {
+    transition: none;
+  }
+
+  .walkthroughOverlay {
+    animation: none;
+  }
+
+  .walkthroughContent.walkthroughSlideRight,
+  .walkthroughContent.walkthroughSlideLeft {
+    animation: none;
+  }
+
+  .walkthroughNavBtn {
+    transition: none;
+  }
+
+  .walkthroughDot {
+    transition: none;
+  }
+
+  .walkthroughClose {
     transition: none;
   }
 }
