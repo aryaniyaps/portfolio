@@ -1,0 +1,20 @@
+.imageWrapper {
+  margin: 2rem 0;
+}
+
+.image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+}
+
+.caption {
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 400;
+  letter-spacing: var(--tracking-normal);
+  color: var(--color-text-tertiary);
+  margin-top: 0.5rem;
+  font-style: italic;
+}
