@@ -284,8 +284,8 @@ export const PROJECTS: readonly Project[] = [
 export const NAV_LINKS = [
   { href: "#about", label: "About", external: false },
   { href: "#work", label: "Work", external: false },
+  { href: "/blog", label: "Blog", external: false },
   { href: "#contact", label: "Contact", external: false },
-  { href: "https://aryaniyapsblog.vercel.app", label: "Blog", external: true },
 ] as const;
 
 export const SECTIONS = {
@@ -319,8 +319,12 @@ export const SECTIONS = {
     body1: "Work should be fun. Excellence in execution is non-negotiable. Rethink everything from first principles. Aggressively adapt to change. These aren't slogans \u2014 they're the filters every decision passes through.",
     body2: "Influenced by Built to Last, Good to Great, The Hard Thing About Hard Things, Zero to One. Training to think like a long-term CEO, not just a builder.",
   },
+  blog: {
+    chapter: "VI",
+    heading: ["Latest", "Writing"],
+  },
   contact: {
-    chapter: "V",
+    chapter: "VII",
     heading: ["Let's", "Build"],
     body: "Looking to connect with founders, operators, and deeply technical builders who think in decades, not quarters. If you're building something ambitious, let's talk.",
   },

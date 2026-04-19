@@ -182,6 +182,7 @@ export default function ScrollAnimator() {
 
       if (scenes[4]) setupTextReveal(scenes[4], 75);
       if (scenes[5]) setupTextReveal(scenes[5], 72);
+      if (scenes[6]) setupTextReveal(scenes[6], 72);
 
 // Project cards stagger animation (scene 4 → scenes[3])
       const projectsScene = scenes[3];
@@ -234,7 +235,7 @@ export default function ScrollAnimator() {
         }
       }
 
-// Contact is already handled above by setupTextReveal(scenes[5])
+// Contact handled by setupTextReveal(scenes[6])
      },
     { scope: containerRef }
   );

@@ -1,4 +1,5 @@
 import { SECTIONS, SKILL_BARS_GROUP_1, SKILL_BARS_GROUP_2, SKILL_BARS_GROUP_3 } from "@/lib/constants";
+import { getBlogPosts } from "@/lib/blog";
 import Loader from "@/components/Loader";
 import FrameCanvas from "@/components/FrameCanvas";
 import HeroInteraction from "@/components/HeroInteraction";
@@ -8,7 +9,9 @@ import Footer from "@/components/Footer";
 import ProjectsCarousel from "@/components/ProjectsCarousel";
 import styles from "./page.module.css";
 
-export default function Home() {
+export default async function Home() {
+  const latestPosts = getBlogPosts().slice(0, 3);
+
   return (
     <>
       <Loader />
@@ -167,8 +170,45 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ── Latest Writing ── */}
+        <section className={styles.scene} data-scene="6" id="blog" aria-label="Latest blog posts">
+          <div className={styles.sceneContent}>
+            <div className={styles.blogWrap} data-anim="slide">
+              <span className={styles.chapter}>{SECTIONS.blog.chapter}</span>
+              <h2 className={styles.heading}>
+                {SECTIONS.blog.heading[0]}
+                <br />
+                {SECTIONS.blog.heading[1]}
+              </h2>
+              <div className={styles.blogGrid}>
+                {latestPosts.map((post) => (
+                  <a key={post.slug} href={`/blog/${post.slug}`} className={styles.blogCard}>
+                    <span className={styles.blogCardDate}>
+                      {new Date(post.date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </span>
+                    <h3 className={styles.blogCardTitle}>{post.title}</h3>
+                    <p className={styles.blogCardSummary}>
+                      {post.summary.length > 120
+                        ? `${post.summary.slice(0, 120)}…`
+                        : post.summary}
+                    </p>
+                    <span className={styles.blogCardLink}>Read →</span>
+                  </a>
+                ))}
+              </div>
+              <a href="/blog" className={styles.blogMore}>
+                View all posts →
+              </a>
+            </div>
+          </div>
+        </section>
+
         {/* ── Let's Build ── */}
-        <section className={styles.scene} data-scene="6" id="contact" aria-label="Contact">
+        <section className={styles.scene} data-scene="7" id="contact" aria-label="Contact">
           <div className={styles.sceneContent}>
             <div
               className={`${styles.textWrap} ${styles.textCenter}`}

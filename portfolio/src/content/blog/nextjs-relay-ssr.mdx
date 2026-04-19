@@ -1,0 +1,838 @@
+---
+title: Using Relay with Next.js and React Server Components (RSC)
+date: '2025-01-01'
+tags: ['next.js', 'relay', 'graphql', 'typescript', 'frontend']
+draft: false
+layout: PostSimple
+images: []
+summary: This blog post explores how to integrate Relay and Next.js with React Server Components (RSC), addressing a gap in existing resources. While Relay excels as a GraphQL client for Client-Side Rendering (CSR), this guide demonstrates its potential for RSC use cases, which is vital for applications prioritizing SEO and faster initial load times.
+---
+
+GraphQL is an excellent tool for effortless and efficient data fetching in client-side applications, which are mostly Single Page Applications rendered client-side. With the advent of frameworks like Next.js and Remix, the data-fetching paradigm has shifted to support rendering on the server (RSC) where SEO is a top priority.
+
+While Relay is an excellent GraphQL client, it has primarily been employed in Client-Side Rendered (CSR) applications. While Relay works well out of the box with Next.js for CSR, you might wonder if it can also be used for use cases that involve RSC.
+
+The answer is yes. Relay works exceptionally well in this new data-fetching paradigm.
+
+<p align="left">
+  <img src="/images/blog/nextjs-relay-ssr/nextjs-relay-disaster.jpg" />
+</p>
+
+However, there are no comprehensive guides for integrating Relay with RSC in real-world scenarios, making it a daunting task.
+
+> TLDR: Use `@inline` fragments to load data for metadata generation and server-side logic, alongside view data.
+
+## Existing Resources/Guides
+
+At the time of writing, the only official example for using Relay with Next.js (13) and server-side data fetching is [this issue tracker example](https://github.com/relayjs/relay-examples/tree/b6f9b199d0b8027b5a76a11f1821631b216f4df4/issue-tracker-next-v13).
+
+This example only covers preloading queries on the server. It does not address other aspects, such as metadata generation, raising `notFound` exceptions before rendering, and more.
+
+Another challenge arises from Next.js's new data-fetching patterns, which encourage developers to `fetch` network requests everywhere—during metadata generation and server-side data fetching—without worrying about duplicate requests. While Next.js and React deduplicate these queries, this approach does not align well with GraphQL and Relay.
+
+Firing multiple requests when a single request is sufficient is considered an anti-pattern in Relay.
+
+## How React Server Components (RSC) Work
+Before diving into the implementation, it's essential to understand how React Server Components (RSC) work.
+
+React Server Components are a React feature designed to optimize the rendering and data-fetching process by splitting the responsibilities between the server and the client. RSC allows some components to be rendered entirely on the server, reducing the amount of JavaScript sent to the client and enhancing performance. This approach is particularly beneficial for applications requiring fast initial load times and efficient data fetching.
+### Steps of RSC:
+
+1. **Initial Request**  
+   The browser sends an HTTP request to the server. This request specifies the route and any associated data-fetching requirements.
+
+2. **Data Fetching on the Server**  
+   The server retrieves the necessary data for rendering the server components. This may involve queries to databases, APIs, or other backend services.
+
+3. **Server-Side Rendering of Components**  
+   The server processes the React Server Components and renders them into lightweight payloads (not full HTML). These payloads contain the component's serialized structure and data.
+
+4. **Streaming the Payload to the Client**  
+   The server streams the payloads to the browser as they are generated. This enables the client to start displaying content incrementally, improving perceived performance.
+
+5. **Client Integration**  
+   The client receives the payloads and uses them to assemble the final UI. Client-side React components handle interactivity and any dynamic updates beyond the server-rendered parts.
+
+Unlike traditional SSR, RSC eliminates the need for hydration of the server-rendered parts, as they remain static and are separate from client-rendered components. Only the client-rendered components require interactivity.
+
+## When to Use React Server Components
+
+While RSC offers significant advantages, you must evaluate whether it is necessary for your use case. This is particularly important when using GraphQL due to its trade-offs:
+
+**The GraphQL client cache cannot be used with RSC.**
+
+<p align="left">
+  <img src="/images/blog/nextjs-relay-ssr/ssr-tradeoff.jpg" />
+</p>
+
+
+This means that every time you navigate to a RSC, even if it has already been loaded, it always fetches data on every request. 
+If you've used GraphQL, you know that client side caching is important, and it's what makes your app *fly*. Let me give you a couple of examples to showcase the tradeoffs.
+
+let's take a couple of pages from [GitHub](https://github.com) as an example.
+
+The first page is the home page.
+
+<p align="left">
+  <img src="/images/blog/nextjs-relay-ssr/job-board-screen-1.png" />
+</p>
+
+This page has data that is client- specific. The home feed is personalized for each user. Hence, SEO isn't a priority here.
+Moreover, it is valuable to cache this data on the first load, to prevent unnecessary queries.
+
+For this particular page, we come to the following conclusion:
+
+❌ React Server Components
+✅ Client Side Rendering
+
+
+The second page is a repository detail page.
+
+<p align="left">
+  <img src="/images/blog/nextjs-relay-ssr/job-board-screen-2.png" />
+</p>
+
+SEO is a priority here because this page is likely to be shared across the web and needs rich metadata to be present on the first load.
+This page is not user-specific, except for certain parts of the navbar (we could load the navbar alone on the client side too- in case you were wondering).
+
+Hence, for this particular page, we make the following tradeoff:
+
+✅ React Server Components
+❌ Client Side Rendering
+
+even though this means that we won't use the GraphQL client cache.
+
+[Here's](https://www.youtube.com/embed/kUs-fH1k-aM?si=SDxoTXOgSeVoa2RF) a great video about this topic.
+
+
+## RSC with Relay and Next.js- Setup
+
+Now that we've gone over when to use RSC, I trust that you're using it because you truly need it, and not because you want to use the 
+hottest data fetching paradigm.
+
+
+### Relay Data Fetching Paradigms
+
+>In our experience, the overwhelming majority of products want one specific behavior: fetch all the data for a view hierarchy while displaying a loading indicator, and then render the entire view once the data is available.
+
+This is a quote taken from the [Relay documentation](https://relay.dev/docs/principles-and-architecture/thinking-in-relay/).
+
+Essentially, the core pattern of data fetching with Relay is to fetch all the data for a particular view at once, and then render the data when it's available.
+
+The same principle must be applied while fetching data with RSC as well.
+
+But here, instead of just fetching data for the view (page contents), we also fetch data for other activities such as:
+- metadata generation
+- checking if a resource exists before throwing the status code 404
+
+Ideally, all of this data fetching must occur in a single query as well.
+
+We also need to have two Relay environments- one on the server and one on the client.
+Once the data fetching is done on the server, we hydrate the client environment's response cache with that data.
+
+This is essentially what all the following tutorial and examples are about.
+
+
+<p align="left">
+  <img src="/images/blog/nextjs-relay-ssr/ssr-diagram.png" />
+</p>
+
+### Prerequisites
+
+This tutorial assumes that you have a Next.js application with Relay installed. If you haven't already, [here's how](https://nextjs.org/docs/app/api-reference/cli/create-next-app) you can create a Next.js app.
+Follow the [official Relay documentation](https://relay.dev/docs/getting-started/installation-and-setup/) to install Relay in your project.
+
+
+### Creating separate Relay Environments for the server and client
+
+The first thing we need to do is to create separate Relay environments for the server and client.
+
+Let's create a file for our server environment:
+
+
+```ts:lib/relay/environments/server.ts
+import { env } from "@/lib/env";
+import { redirect } from "next/navigation";
+import { cache } from "react";
+import type {
+	GraphQLResponse,
+	RequestParameters,
+	Variables,
+} from "relay-runtime";
+import { Environment, Network, RecordSource, Store } from "relay-runtime";
+
+export async function networkFetch(
+	request: RequestParameters,
+	variables: Variables,
+): Promise<GraphQLResponse> {
+	const { cookies } = await import("next/headers");
+	const serverCookie = await cookies();
+
+	const resp = await fetch(env.NEXT_PUBLIC_API_URL, {
+		method: "POST",
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Cookie: serverCookie.toString(),
+		},
+		credentials: "include",
+		body: JSON.stringify({
+			query: request.text,
+			variables,
+		}),
+	});
+	const json = await resp.json();
+
+	// GraphQL returns exceptions (for example, a missing required variable) in the "errors"
+	// property of the response. If any exceptions occurred when processing the request,
+	// throw an error to indicate to the developer what went wrong.
+	if (Array.isArray(json.errors)) {
+		for (const err of json.errors) {
+			switch (err.extensions.code) {
+				// when an AuthenticationError is thrown in a resolver
+				case "UNAUTHENTICATED":
+					redirect("/auth/login");
+			}
+		}
+		console.error(json.errors);
+		throw new Error(
+			`Error fetching GraphQL query '${
+				request.name
+			}' with variables '${JSON.stringify(variables)}': ${JSON.stringify(
+				json.errors,
+			)}`,
+		);
+	}
+
+	return json;
+}
+
+function createNetwork() {
+	async function fetchResponse(
+		params: RequestParameters,
+		variables: Variables,
+	) {
+		return await networkFetch(params, variables);
+	}
+
+	const network = Network.create(fetchResponse);
+	return network;
+}
+
+export const createServerEnvironment = cache(() => {
+	return new Environment({
+		network: createNetwork(),
+		store: new Store(RecordSource.create()),
+		isServer: true,
+	});
+});
+```
+
+We are caching the server environment using `React.cache()` to ensure that only one server environment is used throughout the scope of a single request.
+
+Since you are using RSC and rendering on the server, you're probably using cookie based authentication. In our network fetch function, we make use of Next.js headers to pass in the
+cookies along with our requests.
+
+We also use the built-in server navigation utilities to redirect in case we come across authentication errors.
+
+
+Now, let's create a file for our client environment:
+
+
+```ts:lib/relay/environments/client.ts
+"use client";
+import { env } from "@/lib/env";
+import type {
+	CacheConfig,
+	GraphQLResponse,
+	RequestParameters,
+	Variables,
+} from "relay-runtime";
+import {
+	Environment,
+	Network,
+	QueryResponseCache,
+	RecordSource,
+	Store,
+} from "relay-runtime";
+
+const CACHE_TTL = 5 * 1000; // 5 seconds, to resolve preloaded results
+
+export async function networkFetch(
+	request: RequestParameters,
+	variables: Variables,
+): Promise<GraphQLResponse> {
+	const resp = await fetch(env.NEXT_PUBLIC_API_URL, {
+		method: "POST",
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+		},
+		credentials: "include",
+		body: JSON.stringify({
+			query: request.text,
+			variables,
+		}),
+	});
+	const json = await resp.json();
+
+	// GraphQL returns exceptions (for example, a missing required variable) in the "errors"
+	// property of the response. If any exceptions occurred when processing the request,
+	// throw an error to indicate to the developer what went wrong.
+	if (Array.isArray(json.errors)) {
+		for (const err of json.errors) {
+			switch (err.extensions.code) {
+				// Apollo Server sets code to UNAUTHENTICATED
+				// when an AuthenticationError is thrown in a resolver
+				case "UNAUTHENTICATED":
+					window.location.href = "/auth/login";
+			}
+		}
+		console.error(json.errors);
+		throw new Error(
+			`Error fetching GraphQL query '${
+				request.name
+			}' with variables '${JSON.stringify(variables)}': ${JSON.stringify(
+				json.errors,
+			)}`,
+		);
+	}
+
+	return json;
+}
+
+export const responseCache: QueryResponseCache = new QueryResponseCache({
+	size: 100,
+	ttl: CACHE_TTL,
+});
+
+function createNetwork() {
+	async function fetchResponse(
+		params: RequestParameters,
+		variables: Variables,
+		cacheConfig: CacheConfig,
+	) {
+		const isQuery = params.operationKind === "query";
+		const cacheKey = params.id ?? params.cacheID;
+		const forceFetch = cacheConfig?.force;
+		if (isQuery && !forceFetch) {
+			const fromCache = responseCache.get(cacheKey, variables);
+			if (fromCache != null) {
+				return Promise.resolve(fromCache);
+			}
+		}
+
+		return await networkFetch(params, variables);
+	}
+
+	const network = Network.create(fetchResponse);
+	return network;
+}
+
+export function createClientEnvironment() {
+	return new Environment({
+		network: createNetwork(),
+		store: new Store(RecordSource.create()),
+		isServer: false,
+	});
+}
+```
+
+The client network fetch function checks if the request already has a response in the response cache. If it exists, the cached value is used.
+This function also doesn't need to pass in the cookies explicitly, as it's handled by the browser itself.
+
+We also use the native window API to redirect the user, on facing errors.
+
+
+We also need a single function to get the current Relay environment, this is handy to get the client/ server Relay environment throughout the application.
+
+```ts:lib/relay/environments/index.ts
+import type { Environment } from "react-relay";
+import { createClientEnvironment } from "./client";
+import { createServerEnvironment } from "./server";
+
+const IS_SERVER = typeof window === typeof undefined;
+
+let _clientEnvironment: null | Environment = null;
+
+export function getCurrentEnvironment() {
+	if (IS_SERVER) {
+		return createServerEnvironment();
+	}
+
+	if (!_clientEnvironment) {
+		_clientEnvironment = createClientEnvironment();
+	}
+	return _clientEnvironment;
+}
+```
+
+Here, we conditionally return the appropriate environment.
+The client environment is reused, when it has already been created. This ensures that the client side cache isn't disturbed, while other parts of our application are server rendered.
+
+### Setting up the Relay Environment Provider
+
+We need to make sure that the client-side Relay environment provider has access to the right data.
+
+```ts:app/providers.tsx
+"use client";
+import { getCurrentEnvironment } from "@/lib/relay/environments";
+import { useState } from "react";
+import { RelayEnvironmentProvider } from "react-relay";
+
+export default function Providers({
+	children,
+}: {
+	children: React.ReactNode;
+}) {
+	const [environment] = useState(() => {
+		return getCurrentEnvironment();
+	});
+
+	return (
+        <RelayEnvironmentProvider environment={environment}>
+            {children}
+        </RelayEnvironmentProvider>
+	);
+}
+```
+The Relay Environment Provider ideally wraps children at the root component
+(`layout.tsx`, when using the Next.js App Router)
+
+
+### Data Fetching Utilities
+Going forward, we need utilities for RSC data fetching and client side hydration.
+
+Create the following files to implement *serializable* queries:
+
+> [!NOTE]
+>
+> *Serializable* queries are nothing but a serialized/ encoded version of GraphQL queries made on the server, that can be passed to client components to hydrate the client side Relay environment.
+
+```ts:lib/relay/serializablePreloadedQuery.ts
+import type {
+	ConcreteRequest,
+	GraphQLResponse,
+	OperationType,
+	VariablesOf,
+} from "relay-runtime";
+
+export interface SerializablePreloadedQuery<
+	TRequest extends ConcreteRequest,
+	TQuery extends OperationType,
+> {
+	params: TRequest["params"];
+	variables: VariablesOf<TQuery>;
+	data: TQuery["response"];
+	graphQLResponse: GraphQLResponse;
+}
+```
+
+```ts:lib/relay/loadSerializableQuery.ts
+import type {
+	ConcreteRequest,
+	GraphQLTaggedNode,
+	OperationType,
+	VariablesOf,
+} from "relay-runtime";
+import { createOperationDescriptor, getRequest } from "relay-runtime";
+import { getCurrentEnvironment } from "./environments";
+import { networkFetch } from "./environments/server";
+import type { SerializablePreloadedQuery } from "./serializablePreloadedQuery";
+
+export default async function loadSerializableQuery<
+	TRequest extends ConcreteRequest,
+	TQuery extends OperationType,
+>(
+	taggedNode: GraphQLTaggedNode,
+	variables: VariablesOf<TQuery>,
+): Promise<SerializablePreloadedQuery<TRequest, TQuery>> {
+	const environment = getCurrentEnvironment();
+
+	// Convert params into a valid ConcreteRequest
+	const request = getRequest(taggedNode) as TRequest | null;
+
+	if (!request) {
+		throw new Error(
+			"Invalid request: could not resolve query to ConcreteRequest.",
+		);
+	}
+
+	const graphQLResponse = await networkFetch(request.params, variables);
+
+	const operationDescriptor = createOperationDescriptor(request, variables);
+
+	// hydrate relay store with the response
+	if ("data" in graphQLResponse && graphQLResponse.data) {
+		environment.commitPayload(operationDescriptor, graphQLResponse.data);
+	}
+
+	// ✅ Look up the data from the store instead of refetching
+	const snapshot = environment.lookup(operationDescriptor.fragment);
+	const data = snapshot.data;
+
+	if (!data) {
+		throw new Error("Failed to read query data from the store");
+	}
+
+	return {
+		params: request.params, // Use the resolved ConcreteRequest params
+		variables,
+		data,
+		graphQLResponse,
+	};
+}
+```
+
+Essentially, the `loadSerializableQuery` function makes a network fetch request and hydrates the Relay store with the raw GraphQL Response.
+
+It returns both the raw GraphQL Response, as well as a snapshot of the data from the Relay store.
+The snapshot (present in the `data` field) is important, as we need it to utilize the data for server-side activities such as metadata generation.
+
+The raw GraphQL Response is used to hydrate the client environment later.
+
+
+> [!NOTE]
+>
+> Out of curiosity, you might ask, why not fetch the request via the Relay environment first, and then convert the response into the format of a raw GraphQL response?
+> This way, we can cache duplicate network requests beforehand, during the scope of a request, right?
+> The answer to this is- Converting the result of a `fetchQuery` function call into a raw GraphQL response isn't possible, at least at the time of writing.
+
+
+We also need a React Hook to use the serialized queries to hydrate the client environment.
+
+```ts:lib/relay/useSerializablePreloadedQuery.ts
+import { useMemo } from "react";
+import type { PreloadFetchPolicy, PreloadedQuery } from "react-relay";
+import type {
+	ConcreteRequest,
+	IEnvironment,
+	OperationType,
+} from "relay-runtime";
+import { responseCache } from "./environments/client";
+import type { SerializablePreloadedQuery } from "./serializablePreloadedQuery";
+
+export default function useSerializablePreloadedQuery<
+	TRequest extends ConcreteRequest,
+	TQuery extends OperationType,
+>(
+	environment: IEnvironment,
+	preloadQuery: SerializablePreloadedQuery<TRequest, TQuery>,
+	fetchPolicy: PreloadFetchPolicy = "store-or-network",
+): PreloadedQuery<TQuery> {
+	useMemo(() => {
+		writePreloadedQueryToCache(preloadQuery);
+	}, [preloadQuery]);
+
+	return {
+		environment,
+		fetchKey: preloadQuery.params.id ?? preloadQuery.params.cacheID,
+		fetchPolicy,
+		isDisposed: false,
+		name: preloadQuery.params.name,
+		kind: "PreloadedQuery",
+		variables: preloadQuery.variables,
+		dispose: () => {
+			return;
+		},
+	};
+}
+
+function writePreloadedQueryToCache<
+	TRequest extends ConcreteRequest,
+	TQuery extends OperationType,
+>(preloadedQueryObject: SerializablePreloadedQuery<TRequest, TQuery>) {
+	// TODO: write the normalized data to cache here
+	const cacheKey =
+		preloadedQueryObject.params.id ?? preloadedQueryObject.params.cacheID;
+	responseCache?.set(
+		cacheKey,
+		preloadedQueryObject.variables,
+		preloadedQueryObject.graphQLResponse,
+	);
+}
+```
+
+This hook writes the raw GraphQL response into the response cache, which means that we won't have any queries made by the client for the same data, until the cache TTL expires.
+
+It returns a `PreloadedQuery` object, which means that the result can be used with the Relay [`usePreloadedQuery`](https://relay.dev/docs/api-reference/use-preloaded-query/) hook.
+
+
+## Example Use cases
+Now that we have the necessary environments and utilities setup, its time to jump into example use cases.
+
+### Preloading Queries
+
+Here is a Page (that displays a job), that preloads queries on the server.
+
+
+```ts:app/jobs/[slug]/page.tsx
+import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
+import { cache } from "react";
+import { graphql } from "relay-runtime";
+import JobDetailViewClientComponent from "./JobDetailViewClientComponent";
+import type { pageJobDetailMetadataFragment$key } from "./__generated__/pageJobDetailMetadataFragment.graphql";
+import type JobDetailViewQueryNode from "./__generated__/pageJobDetailViewQuery.graphql";
+import type { pageJobDetailViewQuery } from "./__generated__/pageJobDetailViewQuery.graphql";
+
+export const PageJobDetailViewQuery = graphql`
+  query pageJobDetailViewQuery($slug: String!) {	
+    ...JobDetailViewClientComponentFragment @arguments(slug: $slug)
+  }
+`;
+
+const loadJob = cache(async (slug: string) => {
+	return await loadSerializableQuery<
+		typeof JobDetailViewQueryNode,
+		pageJobDetailViewQuery
+	>(PageJobDetailViewQuery, {
+		slug: slug,
+	});
+});
+
+
+export default async function JobDetailPage({
+	params,
+}: {
+	params: Promise<{ slug: string }>;
+}) {
+	const slug = (await params).slug;
+
+	const preloadedQuery = await loadJob(slug);
+
+	return <JobDetailViewClientComponent preloadedQuery={preloadedQuery} />;
+}
+```
+
+The client component defines a fragment on the root query.
+
+Also, the `loadSerializableQuery` function call is wrapped with `React.cache()`, to ensure that duplicate network requests aren't made, if the same function is to be used somewhere else.
+This is more evident in the examples that follow.
+
+
+The `JobDetailViewClientComponent` is a regular client side React component which consumes it's specified fragment.
+It loads the preloaded query first, like so:
+
+```ts:app/jobs/[slug]/JobDetailViewClientComponent.tsx
+"use client";
+
+import type { SerializablePreloadedQuery } from "@/lib/relay/serializablePreloadedQuery";
+import useSerializablePreloadedQuery from "@/lib/relay/useSerializablePreloadedQuery";
+import {
+	graphql,
+	useFragment,
+	usePreloadedQuery,
+	useRelayEnvironment,
+} from "react-relay";
+
+import JobDetailView from "@/components/job-detail/JobDetailView";
+import type { JobDetailViewClientComponentFragment$key } from "./__generated__/JobDetailViewClientComponentFragment.graphql";
+import type JobDetailViewQueryNode from "./__generated__/pageJobDetailViewQuery.graphql";
+import type { pageJobDetailViewQuery } from "./__generated__/pageJobDetailViewQuery.graphql";
+import PageJobDetailViewQuery from "./__generated__/pageJobDetailViewQuery.graphql";
+
+const JobDetailViewClientComponentFragment = graphql`
+ fragment JobDetailViewClientComponentFragment on Query @argumentDefinitions(
+	  slug: {
+		type: "String!",
+	  }
+	) {
+		...JobDetailViewFragment @arguments(slug: $slug)
+  }
+`;
+
+export default function JobDetailViewClientComponent(props: {
+	preloadedQuery: SerializablePreloadedQuery<
+		typeof JobDetailViewQueryNode,
+		pageJobDetailViewQuery
+	>;
+}) {
+	const environment = useRelayEnvironment();
+	const queryRef = useSerializablePreloadedQuery<
+		typeof JobDetailViewQueryNode,
+		pageJobDetailViewQuery
+	>(environment, props.preloadedQuery);
+
+	const data = usePreloadedQuery(PageJobDetailViewQuery, queryRef);
+
+	const rootQuery = useFragment<JobDetailViewClientComponentFragment$key>(
+		JobDetailViewClientComponentFragment,
+		data,
+	);
+
+	return <JobDetailView rootQuery={rootQuery} />;
+}
+```
+
+
+### Metadata Generation
+We ideally want to fetch data for metdata generation in a single GraphQL query, along with the data required by the actual view. However, traditionally, fragments can only be accessed using React components. So, how will we access the GraphQL data inside the `generateMetadata` function?
+
+The answer is- the `@inline` GraphQL directive.
+
+As mentioned in the [Relay documentation](https://relay.dev/docs/api-reference/graphql-and-directives/#inline), we can use the `@inline` directive to read data from outside of the render phase (or from outside of React).
+
+Here is the same example, that also generates metdata with the GraphQL query:
+
+
+```ts:app/jobs/[slug]/page.tsx
+import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
+import type { Metadata } from "next";
+import { cache } from "react";
+import { graphql, readInlineData } from "relay-runtime";
+import JobDetailViewClientComponent from "./JobDetailViewClientComponent";
+import type { pageJobDetailMetadataFragment$key } from "./__generated__/pageJobDetailMetadataFragment.graphql";
+import type JobDetailViewQueryNode from "./__generated__/pageJobDetailViewQuery.graphql";
+import type { pageJobDetailViewQuery } from "./__generated__/pageJobDetailViewQuery.graphql";
+
+export const PageJobDetailViewQuery = graphql`
+  query pageJobDetailViewQuery($slug: String!) {	
+	...pageJobDetailMetadataFragment @arguments(slug: $slug)
+    ...JobDetailViewClientComponentFragment @arguments(slug: $slug)
+  }
+`;
+
+const PageJobDetailMetadataFragment = graphql`
+ fragment pageJobDetailMetadataFragment on Query @inline @argumentDefinitions(
+      slug: {
+        type: "String!",
+      }
+    ) {
+    job(slug: $slug) {
+      __typename
+      ... on Job {
+        title
+		description
+		company {
+			logoUrl
+		}
+      }
+	 
+    }
+  }
+`;
+
+const loadJob = cache(async (slug: string) => {
+	return await loadSerializableQuery<
+		typeof JobDetailViewQueryNode,
+		pageJobDetailViewQuery
+	>(PageJobDetailViewQuery, {
+		slug: slug,
+	});
+});
+
+export async function generateMetadata({
+	params,
+}: {
+	params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+	const slug = (await params).slug;
+
+	const preloadedQuery = await loadJob(slug);
+
+	const data = readInlineData<pageJobDetailMetadataFragment$key>(
+		PageJobDetailMetadataFragment,
+		preloadedQuery.data,
+	);
+
+	if (data.job.__typename !== "Job") {
+		return {
+			title: "Job Not found",
+			description: "The job you are looking for does not exist",
+			openGraph: {
+				images: ["/default-image.img"],
+			},
+		};
+	}
+
+	return {
+		title: data.job.title,
+		description: data.job.description,
+		openGraph: {
+			images: [data.job.company?.logoUrl || "/default-image.img"],
+		},
+	};
+}
+
+export default async function JobDetailPage({
+	params,
+}: {
+	params: Promise<{ slug: string }>;
+}) {
+	const slug = (await params).slug;
+
+	const preloadedQuery = await loadJob(slug);
+
+	return <JobDetailViewClientComponent preloadedQuery={preloadedQuery} />;
+}
+```
+
+Here, we make separate fragments for the metadata generation as well as the view data.
+
+The metadata GraphQL fragment is marked as `@inline` and is read with the `readInlineData` function.
+
+### Server Side Conditional Logic
+
+Sometimes, we might want to perform certain checks and conditionally render the view, throwing errors otherwise. This can be performed by creating an `@inline` fragment for the usecase.
+
+Here's the same example that throws `notFound` if a job with the given slug is not found:
+
+```ts:app/jobs/[slug]/page.tsx
+import loadSerializableQuery from "@/lib/relay/loadSerializableQuery";
+import { notFound } from "next/navigation";
+import { cache } from "react";
+import { graphql, readInlineData } from "relay-runtime";
+import JobDetailViewClientComponent from "./JobDetailViewClientComponent";
+import type { pageJobDetailMetadataFragment$key } from "./__generated__/pageJobDetailMetadataFragment.graphql";
+import type JobDetailViewQueryNode from "./__generated__/pageJobDetailViewQuery.graphql";
+import type { pageJobDetailViewQuery } from "./__generated__/pageJobDetailViewQuery.graphql";
+
+export const PageJobDetailViewQuery = graphql`
+  query pageJobDetailViewQuery($slug: String!) {	
+	...pageJobDetailMetadataFragment @arguments(slug: $slug)
+    ...JobDetailViewClientComponentFragment @arguments(slug: $slug)
+  }
+`;
+
+const PageJobDetailMetadataFragment = graphql`
+ fragment pageJobDetailMetadataFragment on Query @inline @argumentDefinitions(
+      slug: {
+        type: "String!",
+      }
+    ) {
+    job(slug: $slug) {
+      __typename	 
+    }
+  }
+`;
+
+const loadJob = cache(async (slug: string) => {
+	return await loadSerializableQuery<
+		typeof JobDetailViewQueryNode,
+		pageJobDetailViewQuery
+	>(PageJobDetailViewQuery, {
+		slug: slug,
+	});
+});
+
+export default async function JobDetailPage({
+	params,
+}: {
+	params: Promise<{ slug: string }>;
+}) {
+	const slug = (await params).slug;
+
+	const preloadedQuery = await loadJob(slug);
+
+	const data = readInlineData<pageJobDetailMetadataFragment$key>(
+		PageJobDetailMetadataFragment,
+		preloadedQuery.data,
+	);
+
+	if (data.job.__typename !== "Job") {
+		notFound();
+	}
+
+	return <JobDetailViewClientComponent preloadedQuery={preloadedQuery} />;
+}
+```

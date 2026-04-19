@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
+import Link from "next/link";
 import { NAV_LINKS } from "@/lib/constants";
 import styles from "@/components/components.module.css";
 
@@ -22,22 +23,33 @@ export default function Navigation() {
   return (
     <nav ref={navRef} className={styles.nav}>
       <div className={styles.navLeft}>
-        <a href="#" className={styles.navBrand}>
+        <Link href="/" className={styles.navBrand}>
           ARYAN IYAPPAN
-        </a>
+        </Link>
         <span className={styles.navTagline}>Technical Founder</span>
       </div>
       <div className={styles.navCard}>
         {NAV_LINKS.map((link, i) => (
           <div key={link.href} style={{ display: "contents" }}>
             {i > 0 && <div className={styles.navDivider} />}
-            <a
-              href={link.href}
-              className={styles.navLink}
-              {...(link.external && { target: "_blank", rel: "noopener noreferrer" })}
-            >
-              {link.label}
-            </a>
+            {link.external ? (
+              <a
+                href={link.href}
+                className={styles.navLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {link.label}
+              </a>
+            ) : link.href.startsWith("/") ? (
+              <Link href={link.href} className={styles.navLink}>
+                {link.label}
+              </Link>
+            ) : (
+              <a href={link.href} className={styles.navLink}>
+                {link.label}
+              </a>
+            )}
           </div>
         ))}
       </div>

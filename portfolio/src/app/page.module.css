@@ -987,6 +987,108 @@
   }
 }
 
+/* ── Blog Section (Home) ── */
+.blogWrap {
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.blogGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .blogGrid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.blogCard {
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    border-color var(--duration-normal) var(--ease),
+    background var(--duration-normal) var(--ease),
+    transform var(--duration-normal) var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+
+@media (pointer: fine) {
+  .blogCard:hover {
+    border-color: var(--color-arc-reactor-dim);
+    background: var(--color-bg-elevated);
+    transform: translateY(-2px);
+  }
+}
+
+.blogCardDate {
+  font-family: var(--font-body);
+  font-size: var(--text-hud);
+  font-weight: 400;
+  letter-spacing: var(--tracking-ultra);
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.blogCardTitle {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-normal);
+  color: var(--color-text-primary);
+}
+
+.blogCardSummary {
+  font-size: var(--text-small);
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--color-text-tertiary);
+  flex: 1;
+}
+
+.blogCardLink {
+  font-family: var(--font-body);
+  font-size: var(--text-hud);
+  font-weight: 500;
+  letter-spacing: var(--tracking-ultra);
+  text-transform: uppercase;
+  color: var(--color-arc-reactor);
+  transition: color var(--duration-fast) var(--ease);
+}
+
+.blogCard:hover .blogCardLink {
+  color: var(--color-text-primary);
+}
+
+.blogMore {
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  letter-spacing: var(--tracking-normal);
+  text-transform: uppercase;
+  color: var(--color-arc-reactor);
+  transition: color var(--duration-fast) var(--ease);
+  margin-top: 0.5rem;
+  text-decoration: none;
+}
+
+.blogMore:hover {
+  color: var(--color-text-primary);
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .sceneContent {
