@@ -66,6 +66,7 @@ If the user says "brainstorm" or provides a vague idea:
    - Describe the meme concept and emotional beat
    - Provide search keywords for finding the actual meme
    - Specify placement in the post
+   - **CRITICAL:** Use the `memegen` skill to generate and download the actual meme image locally for future-proofing, rather than just leaving a placeholder.
 
 ### Research Checklist
 - [ ] All library imports verified against current docs
@@ -149,7 +150,7 @@ Key rules:
 - Use `we` for technical tutorials, `I` for opinion posts
 - Use the ✅/❌ `ProConList` component for every approach evaluated
 - Use the `Callout` component for `> [!NOTE]`, `> [!IMPORTANT]`, `> [!WARNING]`, `> [!TIP]`
-- Use the `MemeImage` component for meme/image placements
+- Use the `MemeImage` component for meme/image placements. Ensure you use the locally downloaded file path from the `memegen` skill in the `src` attribute.
 - Code blocks have `:filename` syntax, are complete, production-quality, with type annotations
 - Progressive complexity: naive first, then refined
 - No hedging language — state recommendations directly
@@ -175,7 +176,7 @@ A helpful alternative approach worth considering.
 </Callout>
 
 <MemeImage
-  src="/images/blog/{slug}/descriptive-name.png"
+  src="/images/blog/{slug}/your-downloaded-meme.png"
   alt="Meme template showing X with caption Y"
 />
 
@@ -208,12 +209,11 @@ summary: [2-3 sentence summary — problem statement, what the post covers, key 
 
 Write the complete `.mdx` file content. Do NOT write it to disk automatically — output it for review. The user will decide when to save.
 
-If the post references images, include a section at the end:
+If the post references diagrams or external images (excluding the memes you already downloaded via the `memegen` skill), include a section at the end:
 
 ```
 <!-- IMAGE ASSETS NEEDED:
-1. /images/blog/{slug}/descriptive-name.png — [meme concept: X, search: "Y"]
-2. /images/blog/{slug}/diagram-name.png — [technical diagram showing X]
+1. /images/blog/{slug}/diagram-name.png — [technical diagram showing X]
 -->
 ```
 
@@ -248,6 +248,15 @@ If the post references images, include a section at the end:
 - The user saves to disk when ready
 
 **Agency rule:** If the draft is clean after your review, say so and present it. Don't manufacture issues to seem thorough.
+
+---
+
+## Phase 6: SEO Optimization
+
+**Goal: Guarantee all blogs match SEO goals and templates.**
+
+After ANY change has been made to a blog or a NEW blog has been created, you MUST invoke the `programmatic-seo` skill command. 
+This ensures the blog pages are optimized for SEO based on the data and templates defined in the programmatic SEO playbooks.
 
 ---
 
