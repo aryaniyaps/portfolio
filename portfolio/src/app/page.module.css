@@ -75,8 +75,8 @@
 
 .scene:first-child .sceneContent {
   align-items: flex-start;
-  justify-content: center;
-  padding-top: 8vh;
+  justify-content: flex-start;
+  padding-top: 15vh;
 }
 
 .scene:first-child .textWrap {
@@ -201,52 +201,48 @@
   opacity: 1;
 }
 
-.skillBar {
+.artifactItem {
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.25rem;
   opacity: 0;
   transform: translateX(-40px);
   transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+  position: relative;
+  padding-left: 1rem;
 }
 
-.skillBar.isVisible {
+.artifactItem::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 2px;
+  background: var(--color-arc-reactor);
+  box-shadow: 0 0 8px var(--color-arc-reactor-glow);
+}
+
+.artifactItem.isVisible {
   opacity: 1;
   transform: translateX(0);
 }
 
-.skillDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--color-arc-reactor);
-  flex-shrink: 0;
-  box-shadow: 0 0 12px var(--color-arc-reactor-glow);
+.artifactLabel {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-primary);
 }
 
-.skillLine {
-  height: 1px;
-  background: linear-gradient(90deg, var(--color-arc-reactor), transparent);
-  flex-shrink: 0;
-}
-
-.skillLabel {
-  font-family: var(--font-body);
+.artifactValue {
+  font-family: var(--font-code);
   font-size: var(--text-caption);
   font-weight: 300;
   letter-spacing: var(--tracking-ultra);
   text-transform: uppercase;
-  color: var(--color-text-tertiary);
-  white-space: nowrap;
-}
-
-.skillAccent {
-  font-family: var(--font-display);
-  font-size: 1.4rem;
-  font-weight: 400;
   color: var(--color-arc-reactor-dim);
-  letter-spacing: 0.08em;
-  margin-top: 0.5rem;
 }
 
 /* ── U Shape (Philosophy section) ── */
@@ -426,10 +422,26 @@
 }
 
 .projectInfo {
+  padding: var(--space-4) var(--space-4) var(--space-5);
   display: flex;
   flex-direction: column;
+  gap: var(--space-3);
+  flex-grow: 1;
+}
+
+.projectTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--color-text);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.projectMeta {
+  display: flex;
+  align-items: center;
   gap: var(--space-2);
-  padding: var(--space-4) var(--space-5) var(--space-5);
 }
 
 .srOnly {
@@ -508,7 +520,7 @@
   position: absolute;
   bottom: var(--space-3);
   right: var(--space-4);
-  font-family: var(--font-display);
+  font-family: var(--font-code);
   font-size: var(--text-hud);
   font-weight: 500;
   letter-spacing: var(--tracking-ultra);
@@ -651,14 +663,14 @@
 
 .projectTag {
   font-family: var(--font-display);
-  font-size: 0.5625rem;
+  font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: var(--tracking-ultra);
   text-transform: uppercase;
   color: var(--color-arc-reactor);
   background: rgba(0, 212, 255, 0.06);
   border: 1px solid rgba(0, 212, 255, 0.18);
-  padding: 0.2em 0.6em;
+  padding: 0.3em 0.7em;
   line-height: 1.4;
   white-space: nowrap;
 }
@@ -731,8 +743,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
   background: var(--color-bg-elevated);
   border: 1px solid var(--color-border);
   border-radius: 4px;
@@ -794,6 +806,7 @@
   border: 1px solid var(--color-border);
   border-radius: 6px;
   overflow: hidden;
+  position: relative;
 }
 
 .walkthroughVisual :global(svg) {
@@ -890,8 +903,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   background: var(--color-bg-elevated);
   border: 1px solid var(--color-border);
   border-radius: 4px;
@@ -1249,7 +1262,7 @@
     transform: none;
   }
 
-  .skillBar {
+  .artifactItem {
     transition: none;
     opacity: 1;
     transform: none;

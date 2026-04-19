@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import Image from "next/image";
 import type { Project } from "@/lib/constants";
 import WalkthroughVisual from "./WalkthroughVisual";
 import styles from "@/app/page.module.css";
@@ -123,7 +124,17 @@ export default function ProjectWalkthrough({ project, onClose }: Props) {
           key={step}
         >
           <div className={styles.walkthroughVisual}>
-            <WalkthroughVisual visual={innovation.visual} active={true} />
+            {innovation.image ? (
+              <Image
+                src={innovation.image}
+                alt={innovation.title}
+                fill
+                style={{ objectFit: "cover" }}
+                quality={80}
+              />
+            ) : (
+              <WalkthroughVisual visual={innovation.visual} active={true} />
+            )}
           </div>
 
           <div className={styles.walkthroughText}>

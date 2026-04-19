@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import type { ThumbnailAccent } from "@/lib/constants";
 import styles from "@/app/page.module.css";
 
@@ -7,6 +8,7 @@ interface ProjectThumbnailProps {
   lines: readonly string[];
   accent: ThumbnailAccent;
   metric?: string;
+  image?: string;
   hovered: boolean;
 }
 
@@ -20,6 +22,7 @@ export default function ProjectThumbnail({
   lines,
   accent,
   metric,
+  image,
   hovered,
 }: ProjectThumbnailProps) {
   const { cssClass: glowClass, color } = ACCENT_MAP[accent];
@@ -27,30 +30,40 @@ export default function ProjectThumbnail({
 
   return (
     <div className={`${styles.projectThumbnail} ${glowClass}`}>
-      <div className={styles.thumbnailContent}>
-        {lines.map((line, i) => (
-          <span
-            key={i}
-            className={styles.thumbnailTitleLine}
-            style={{
-              color,
-              fontSize:
-                lineCount === 1
-                  ? "clamp(1.6rem, 3vw, 2.2rem)"
-                  : lineCount === 2
-                    ? "clamp(1.3rem, 2.5vw, 1.8rem)"
-                    : "clamp(1.1rem, 2vw, 1.5rem)",
-            }}
-          >
-            {line}
-          </span>
-        ))}
-        {metric && (
-          <span className={styles.thumbnailMetric} style={{ color }}>
-            {metric}
-          </span>
-        )}
-      </div>
+      {image ? (
+        <Image
+          src={image}
+          alt={lines.join(" ")}
+          fill
+          style={{ objectFit: "cover" }}
+          sizes="(max-width: 768px) 100vw, 50vw"
+        />
+      ) : (
+        <div className={styles.thumbnailContent}>
+          {lines.map((line, i) => (
+            <span
+              key={i}
+              className={styles.thumbnailTitleLine}
+              style={{
+                color,
+                fontSize:
+                  lineCount === 1
+                    ? "clamp(1.6rem, 3vw, 2.2rem)"
+                    : lineCount === 2
+                      ? "clamp(1.3rem, 2.5vw, 1.8rem)"
+                      : "clamp(1.1rem, 2vw, 1.5rem)",
+              }}
+            >
+              {line}
+            </span>
+          ))}
+          {metric && (
+            <span className={styles.thumbnailMetric} style={{ color }}>
+              {metric}
+            </span>
+          )}
+        </div>
+      )}
       {hovered && <div className={styles.thumbnailScanLine} />}
     </div>
   );

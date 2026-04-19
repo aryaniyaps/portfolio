@@ -55,11 +55,16 @@ export default function ProjectCard({ project, onOpenWalkthrough }: Props) {
           lines={project.thumbnailLines}
           accent={project.thumbnailAccent}
           metric={project.thumbnailMetric}
+          image={project.thumbnailImage}
           hovered={hovered}
         />
       </div>
       <div className={styles.projectInfo}>
-        <span className={styles.srOnly}>{project.title}</span>
+        {project.thumbnailImage ? (
+          <h3 className={styles.projectTitle}>{project.title}</h3>
+        ) : (
+          <span className={styles.srOnly}>{project.title}</span>
+        )}
         <div className={styles.projectMeta}>
           <span className={styles.projectCompany}>{project.company}</span>
           {project.date && (

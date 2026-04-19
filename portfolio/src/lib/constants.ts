@@ -1,14 +1,8 @@
-export const SKILL_BARS = [
-  { label: "GRAPHQL", width: 180 },
-  { label: "WEB DEVELOPMENT", width: 170 },
-  { label: "AI ENGINEERING", width: 155 },
-  { label: "AGENTIC DEVELOPMENT", width: 145 },
-  { label: "CONTEXT ENGINEERING", width: 140 },
+export const ARTIFACTS = [
+  { label: "STRAWBERRY GRAPHQL", value: "OSS CONTRIBUTOR" },
+  { label: "HOSPITALJOBS.IN", value: "FOUNDER \u00B7 GTM, SALES & PRODUCT" },
+  { label: "HACKATHONS", value: "2X FIRST PLACE" },
 ] as const;
-
-export const SKILL_BARS_GROUP_1 = SKILL_BARS.filter((_, i) => i < 2);
-export const SKILL_BARS_GROUP_2 = SKILL_BARS.filter((_, i) => i >= 2 && i < 4);
-export const SKILL_BARS_GROUP_3 = SKILL_BARS.filter((_, i) => i >= 4);
 
 export type InnovationVisual =
   | "auth"
@@ -25,6 +19,7 @@ export interface Innovation {
   readonly title: string;
   readonly description: string;
   readonly visual: InnovationVisual;
+  readonly image?: string;
   readonly tags?: readonly string[];
 }
 
@@ -41,6 +36,7 @@ export interface Project {
   readonly thumbnailAccent: ThumbnailAccent;
   readonly thumbnailLines: readonly string[];
   readonly thumbnailMetric?: string;
+  readonly thumbnailImage?: string;
 }
 
 export const PROJECTS: readonly Project[] = [
@@ -67,7 +63,7 @@ export const PROJECTS: readonly Project[] = [
         description:
           "Authored extensive pagination documentation covering relay-style connection implementation from scratch. Fixed edge cases in cursor-based pagination that affected production workflows. Improved DX for the entire community.",
         visual: "code",
-        tags: ["RELAY CURSORS", "DX"],
+        tags: ["RELAY", "DX"],
       },
     ],
   },
@@ -81,13 +77,15 @@ export const PROJECTS: readonly Project[] = [
     github: "https://github.com/hospitaljobsin/hospitaljobsin",
     thumbnailAccent: "red",
     thumbnailLines: ["HOSPITALJOBS.IN"],
-    thumbnailMetric: "125K",
+    thumbnailMetric: "GTM, SALES, PRODUCT",
+    thumbnailImage: "/project-thumbnails/hospitaljobsin/main.png",
     innovations: [
       {
         title: "Custom Authentication System",
         description:
           "Built an enterprise-grade authentication system from scratch — not a plug-in, not a wrapper. Passkey support, session management, CSRF protection, and security hardening engineered specifically for this domain.",
         visual: "auth",
+        image: "/project-thumbnails/hospitaljobsin/auth.png",
         tags: ["PASSKEYS", "SESSIONS", "CSRF"],
       },
       {
@@ -95,6 +93,7 @@ export const PROJECTS: readonly Project[] = [
         description:
           "Pioneered agent-driven UIs using CopilotKit for interactive, AI-assisted user experiences. One of the earliest production implementations — agents that reason through actions, not just chat.",
         visual: "agents",
+        image: "/project-thumbnails/hospitaljobsin/copilotkit.png",
         tags: ["COPILOTKIT", "AGENT UI"],
       },
       {
@@ -102,6 +101,7 @@ export const PROJECTS: readonly Project[] = [
         description:
           "Built an agentic system that matches candidates to job opportunities, combining LLM reasoning with structured healthcare data. Not keyword search — actual understanding of candidate profiles and job requirements.",
         visual: "agents",
+        image: "/project-thumbnails/hospitaljobsin/ai-applicant-analysis.png",
         tags: ["LLM MATCHING", "HEALTHCARE"],
       },
       {
