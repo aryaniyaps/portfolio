@@ -5,7 +5,7 @@ interface ProConListProps {
   limitations: string[];
 }
 
-export default function ProConList({ benefits, limitations }: ProConListProps) {
+export default function ProConList({ benefits = [], limitations = [] }: ProConListProps) {
   return (
     <div className={styles.proConList}>
       {benefits.length > 0 && (

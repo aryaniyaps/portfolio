@@ -8,6 +8,8 @@ export const metadata = {
     "Writing about full-stack engineering, GraphQL, AI, and building things that last.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default function BlogPage() {
   const posts = getBlogPosts();
 

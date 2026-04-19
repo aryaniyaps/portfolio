@@ -1,5 +1,7 @@
 import { SECTIONS, SKILL_BARS_GROUP_1, SKILL_BARS_GROUP_2, SKILL_BARS_GROUP_3 } from "@/lib/constants";
 import { getBlogPosts } from "@/lib/blog";
+import Link from "next/link";
+import { unstable_noStore as noStore } from "next/cache";
 import Loader from "@/components/Loader";
 import FrameCanvas from "@/components/FrameCanvas";
 import HeroInteraction from "@/components/HeroInteraction";
@@ -9,7 +11,10 @@ import Footer from "@/components/Footer";
 import ProjectsCarousel from "@/components/ProjectsCarousel";
 import styles from "./page.module.css";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
+  noStore();
   const latestPosts = getBlogPosts().slice(0, 3);
 
   return (
@@ -182,7 +187,7 @@ export default async function Home() {
               </h2>
               <div className={styles.blogGrid}>
                 {latestPosts.map((post) => (
-                  <a key={post.slug} href={`/blog/${post.slug}`} className={styles.blogCard}>
+                  <Link key={post.slug} href={`/blog/${post.slug}`} className={styles.blogCard}>
                     <span className={styles.blogCardDate}>
                       {new Date(post.date).toLocaleDateString("en-US", {
                         year: "numeric",
@@ -197,12 +202,12 @@ export default async function Home() {
                         : post.summary}
                     </p>
                     <span className={styles.blogCardLink}>Read →</span>
-                  </a>
+                  </Link>
                 ))}
               </div>
-              <a href="/blog" className={styles.blogMore}>
+              <Link href="/blog" className={styles.blogMore}>
                 View all posts →
-              </a>
+              </Link>
             </div>
           </div>
         </section>
