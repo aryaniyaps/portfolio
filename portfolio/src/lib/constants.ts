@@ -28,6 +28,8 @@ export interface Innovation {
   readonly tags?: readonly string[];
 }
 
+export type ThumbnailAccent = "cyan" | "red" | "gold";
+
 export interface Project {
   readonly title: string;
   readonly company: string;
@@ -36,6 +38,9 @@ export interface Project {
   readonly description: string;
   readonly github: string;
   readonly innovations: readonly Innovation[];
+  readonly thumbnailAccent: ThumbnailAccent;
+  readonly thumbnailLines: readonly string[];
+  readonly thumbnailMetric?: string;
 }
 
 export const PROJECTS: readonly Project[] = [
@@ -46,7 +51,9 @@ export const PROJECTS: readonly Project[] = [
     summary: "Query batching for production APIs",
     description:
       "Contributed to the Strawberry GraphQL library, implementing query batching for production APIs. Helped improve performance and developer experience for one of the most widely-used Python GraphQL frameworks.",
-    github: "",
+    github: "https://github.com/strawberry-graphql/strawberry",
+    thumbnailAccent: "cyan",
+    thumbnailLines: ["STRAWBERRY", "GRAPHQL"],
     innovations: [
       {
         title: "Query Batching",
@@ -72,6 +79,9 @@ export const PROJECTS: readonly Project[] = [
     description:
       "Founded a healthcare hiring marketplace, owning product, GTM, and the chicken-and-egg problem from zero. Built the full stack — from architecture to market — and drove traction in a two-sided marketplace.",
     github: "https://github.com/hospitaljobsin/hospitaljobsin",
+    thumbnailAccent: "red",
+    thumbnailLines: ["HOSPITALJOBS.IN"],
+    thumbnailMetric: "125K",
     innovations: [
       {
         title: "Custom Authentication System",
@@ -111,6 +121,9 @@ export const PROJECTS: readonly Project[] = [
     description:
       "Analyzed multiple state-of-the-art LLMs to assess their effectiveness in automated lease auditing — including GPT-4o, Claude 3.5 Sonnet v1, Meta Llama 3.1 70B Instruct, and Meta Llama 3.1 405B Instruct. Findings informed fine-tuning and optimization of selected models, enhancing accuracy and efficiency, while identifying alternative models as backup solutions for robustness and flexibility.",
     github: "",
+    thumbnailAccent: "cyan",
+    thumbnailLines: ["LLM", "LEASE AUDITING"],
+    thumbnailMetric: "4·LLM",
     innovations: [
       {
         title: "Multi-Model Benchmarking",
@@ -136,6 +149,8 @@ export const PROJECTS: readonly Project[] = [
     description:
       "Developed a robust solution for transforming unstructured PDF documents into structured, actionable data, from idea to a working prototype. Leveraging Python, LangChain, FastAPI, and React, with a highly scalable architecture on AWS — Lambda, API Gateway, DynamoDB, VPC for secure processing, and S3 for storage. The React SPA is hosted on CloudFront via S3, with CI/CD powered by CodeBuild and CodePipeline.",
     github: "",
+    thumbnailAccent: "gold",
+    thumbnailLines: ["AI POWERED", "STRUCTURED DATA", "EXTRACTION"],
     innovations: [
       {
         title: "Structured JSON Before JSON Mode",
@@ -168,6 +183,9 @@ export const PROJECTS: readonly Project[] = [
     description:
       "Analyzed multiple state-of-the-art LLMs to assess their effectiveness in extracting structured data from real estate documents and performing downstream tasks — including GPT-4o, Claude 3.5 Sonnet v2, Mistral 7×8B Instruct, Meta Llama 3.3 70B Instruct, Microsoft Phi 4 14B, and Deepseek V3. Results provided valuable insights into the applicability of these models for real estate workflows, paving the way for fine-tuning and optimization.",
     github: "",
+    thumbnailAccent: "cyan",
+    thumbnailLines: ["LLM", "REAL ESTATE"],
+    thumbnailMetric: "6·LLM",
     innovations: [
       {
         title: "Six-Model Evaluation",
@@ -187,12 +205,15 @@ export const PROJECTS: readonly Project[] = [
   },
   {
     title: "Puthulir",
-    company: "CED",
+    company: "Anna University",
     date: "2024",
     summary: "125K views, 700+ students, zero downtime",
     description:
       "Developed and launched an interactive quiz hosting and event website for Puthulir 2024, aimed at promoting entrepreneurial knowledge among school students in Tamil Nadu. Attracted over 1,25,000 views within the quiz period, engaged 700+ students, and built a serverless infrastructure to handle high traffic with seamless performance throughout the event.",
-    github: "",
+    github: "https://github.com/Primer-Labs/puthulir",
+    thumbnailAccent: "gold",
+    thumbnailLines: ["PUTHULIR"],
+    thumbnailMetric: "125K",
     innovations: [
       {
         title: "125K Views, Zero Downtime",
@@ -214,6 +235,47 @@ export const PROJECTS: readonly Project[] = [
           "Built on serverless infrastructure to absorb traffic spikes without over-provisioning. Zero operational overhead during the event. When 125K people show up, you don't manage servers — you let the platform handle it.",
         visual: "architecture",
         tags: ["SERVERLESS", "BURST TRAFFIC"],
+      },
+    ],
+  },
+  {
+    title: "AI Powered Moodle Proctor",
+    company: "Anna University",
+    date: "Mar 2026",
+    summary: "AI proctoring platform integrated with Moodle",
+    description:
+      "Built a unified online exam proctoring platform integrated with Moodle — a Fastify TypeScript backend, Next.js teacher dashboard, FastAPI computer-vision AI proctoring service, and Electron desktop client. Real-time WebSocket-based violation detection covering face monitoring, gaze tracking, phone detection, identity verification, and more. Full Docker stack with Moodle LMS integration via LTI.",
+    github: "https://github.com/cegit27/moodle-proctor",
+    thumbnailAccent: "red",
+    thumbnailLines: ["AI PROCTOR", "MOODLE"],
+    innovations: [
+      {
+        title: "Real-Time AI Proctoring",
+        description:
+          "FastAPI + WebSocket service that analyzes browser-streamed video frames in real time. Configurable detectors for face monitoring, gaze tracking, phone detection, forbidden objects, identity verification, and more — with strict/moderate/lenient presets. Violations flagged live back to the teacher dashboard.",
+        visual: "agents",
+        tags: ["COMPUTER VISION", "WEBSOCKETS", "FASTAPI"],
+      },
+      {
+        title: "Moodle + LTI Integration",
+        description:
+          "Deep integration with Moodle via LTI — not a bolt-on. Auth, course linking, quiz workflows, and student identity all flow through Moodle's LMS infrastructure. MariaDB for Moodle data, PostgreSQL for proctoring data, each purpose-built.",
+        visual: "integration",
+        tags: ["MOODLE", "LTI", "LMS"],
+      },
+      {
+        title: "Full-Stack Multi-Service Architecture",
+        description:
+          "Five services orchestrated with Docker Compose — Fastify backend, Next.js dashboard, FastAPI AI service, Moodle LMS, and dual databases. Migration service, CSRF protection, JWT auth, WebSocket proxying, and answer-sheet upload flows all production-grade.",
+        visual: "architecture",
+        tags: ["DOCKER", "FASTIFY", "NEXT.JS"],
+      },
+      {
+        title: "Teacher Dashboard & Live Monitoring",
+        description:
+          "Next.js dashboard for exam creation, live room monitoring, student tracking, alert review, and answer-sheet upload management. Real-time violation feed from AI service with configurable warning policies.",
+        visual: "code",
+        tags: ["LIVE MONITORING", "DASHBOARD"],
       },
     ],
   },

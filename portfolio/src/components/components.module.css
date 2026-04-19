@@ -103,11 +103,14 @@
   align-items: center;
   justify-content: space-between;
   padding: 1.4rem 3.5rem;
-  transition: padding 0.5s var(--ease);
+  transition: padding 0.5s var(--ease), background 0.5s var(--ease), backdrop-filter 0.5s var(--ease);
 }
 
 .nav.scrolled {
   padding: 0.8rem 3.5rem;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(30px) saturate(1.3);
+  -webkit-backdrop-filter: blur(30px) saturate(1.3);
 }
 
 .navLeft {
@@ -147,12 +150,18 @@
   display: flex;
   align-items: center;
   gap: 0.2rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  padding: 0.4rem 0.5rem;
+  transition: background 0.5s var(--ease), backdrop-filter 0.5s var(--ease), border-color 0.5s var(--ease), box-shadow 0.5s var(--ease);
+}
+
+.scrolled .navCard {
   background: rgba(12, 12, 12, 0.6);
   backdrop-filter: blur(30px) saturate(1.3);
   -webkit-backdrop-filter: blur(30px) saturate(1.3);
-  border: 1px solid var(--color-border);
-  border-radius: 16px;
-  padding: 0.4rem 0.5rem;
+  border-color: var(--color-border);
   box-shadow:
     0 2px 20px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
@@ -193,7 +202,7 @@
   background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(40px) saturate(1.2);
   -webkit-backdrop-filter: blur(40px) saturate(1.2);
-  padding: 4rem 3rem;
+  padding: 4rem 3.5rem;
 }
 
 .footer::before {
@@ -208,8 +217,6 @@
 }
 
 .footerInner {
-  max-width: 1200px;
-  margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -277,6 +284,6 @@
   }
 
   .footer {
-    padding: 3rem 1.5rem;
+    padding: 3rem 1rem;
   }
 }

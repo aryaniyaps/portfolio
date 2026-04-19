@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
-import ProceduralCanvas from "./ProceduralCanvas";
+import ProjectThumbnail from "./ProjectThumbnail";
 import type { Project } from "@/lib/constants";
 import styles from "@/app/page.module.css";
 
@@ -51,43 +51,23 @@ export default function ProjectCard({ project, onOpenWalkthrough }: Props) {
       onKeyDown={handleKeyDown}
     >
       <div className={styles.projectThumb}>
-        <ProceduralCanvas
-          seed={project.title}
-          width={320}
-          height={192}
-          hoverIntensity={hovered ? 1 : 0}
+        <ProjectThumbnail
+          lines={project.thumbnailLines}
+          accent={project.thumbnailAccent}
+          metric={project.thumbnailMetric}
+          hovered={hovered}
         />
       </div>
       <div className={styles.projectInfo}>
-        <div className={styles.projectHeaderGroup}>
-          <div className={styles.projectHeader}>
-            <span className={styles.projectTitle}>{project.title}</span>
-            <svg
-              className={styles.projectChevron}
-              width="12"
-              height="12"
-              viewBox="0 0 12 12"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M3 5L6 8L9 5"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-          <div className={styles.projectMeta}>
-            <span className={styles.projectCompany}>{project.company}</span>
-            {project.date && (
-              <>
-                <span className={styles.projectSep}>·</span>
-                <span className={styles.projectDate}>{project.date}</span>
-              </>
-            )}
-          </div>
+        <span className={styles.srOnly}>{project.title}</span>
+        <div className={styles.projectMeta}>
+          <span className={styles.projectCompany}>{project.company}</span>
+          {project.date && (
+            <>
+              <span className={styles.projectSep}>·</span>
+              <span className={styles.projectDate}>{project.date}</span>
+            </>
+          )}
         </div>
         <p className={styles.projectSummary}>{project.summary}</p>
         <div className={styles.projectTags}>
