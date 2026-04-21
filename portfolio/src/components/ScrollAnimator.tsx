@@ -32,13 +32,13 @@ export default function ScrollAnimator() {
         });
       }
 
-      // Scene 2: About - text reveal + skill bars
+      // Scene 2: About - text reveal + artifacts
       const scene2 = scenes[1];
       if (scene2) {
         const tw = scene2.querySelector('[data-anim="slide"]');
         const creativeLeft = scene2.querySelector('[data-anim="creative"]');
-        const skillBars = creativeLeft
-          ? creativeLeft.querySelectorAll('[data-skill-bar]')
+        const artifacts = creativeLeft
+          ? creativeLeft.querySelectorAll('[data-artifact]')
           : [];
 
         if (tw) {
@@ -53,7 +53,7 @@ export default function ScrollAnimator() {
           });
         }
 
-        if (creativeLeft && skillBars.length) {
+        if (creativeLeft && artifacts.length) {
           const leftTl = gsap.timeline({
             scrollTrigger: {
               trigger: scene2,
@@ -70,7 +70,7 @@ export default function ScrollAnimator() {
             },
           });
 
-          skillBars.forEach((bar, i) => {
+          artifacts.forEach((bar, i) => {
             leftTl.to(
               bar,
               { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" },

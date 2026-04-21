@@ -1,29 +1,56 @@
 .callout {
   border-radius: 6px;
-  padding: 1rem 1.25rem;
+  padding: 1.25rem;
   margin: 1.5rem 0;
-  border-left: 3px solid;
+  border: 1px solid var(--color-border);
   background: var(--color-bg-subtle);
+  position: relative;
+  overflow: hidden;
 }
 
+.callout::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+}
+
+.calloutNote::before {
+  background: var(--color-arc-reactor);
+  box-shadow: 0 0 12px var(--color-arc-reactor-glow);
+}
 .calloutNote {
-  border-left-color: var(--color-arc-reactor);
   background: var(--color-arc-reactor-glow);
+  border-color: rgba(0, 212, 255, 0.2);
 }
 
+.calloutImportant::before {
+  background: var(--color-gold);
+  box-shadow: 0 0 12px rgba(212, 164, 0, 0.3);
+}
 .calloutImportant {
-  border-left-color: var(--color-gold);
   background: rgba(212, 164, 0, 0.08);
+  border-color: rgba(212, 164, 0, 0.2);
 }
 
+.calloutWarning::before {
+  background: var(--color-repulsor);
+  box-shadow: 0 0 12px rgba(255, 59, 59, 0.3);
+}
 .calloutWarning {
-  border-left-color: var(--color-repulsor);
   background: rgba(255, 59, 59, 0.08);
+  border-color: rgba(255, 59, 59, 0.2);
 }
 
+.calloutTip::before {
+  background: #4ade80;
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.3);
+}
 .calloutTip {
-  border-left-color: #4ade80;
   background: rgba(74, 222, 128, 0.06);
+  border-color: rgba(74, 222, 128, 0.2);
 }
 
 .header {

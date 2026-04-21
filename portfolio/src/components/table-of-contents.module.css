@@ -94,7 +94,7 @@
     color: var(--color-text-tertiary);
     background: none;
     border: none;
-    border-left: 2px solid transparent;
+    border-left: 1px solid transparent;
     cursor: pointer;
     transition:
       color var(--duration-fast) var(--ease),
@@ -146,7 +146,7 @@
     display: block;
     padding: 0.35rem 0;
     padding-left: 1rem;
-    border-left: 2px solid var(--color-border);
+    border-left: 1px solid var(--color-border);
     font-family: var(--font-body);
     font-size: var(--text-caption);
     font-weight: 300;
@@ -154,7 +154,7 @@
     color: var(--color-text-tertiary);
     background: none;
     border: none;
-    border-left: 2px solid var(--color-border);
+    border-left: 1px solid var(--color-border);
     cursor: pointer;
     text-align: left;
     width: 100%;

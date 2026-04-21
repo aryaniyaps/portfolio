@@ -1,4 +1,4 @@
-import { SECTIONS, SKILL_BARS_GROUP_1, SKILL_BARS_GROUP_2, SKILL_BARS_GROUP_3 } from "@/lib/constants";
+import { SECTIONS, ARTIFACTS } from "@/lib/constants";
 import { getBlogPosts } from "@/lib/blog";
 import Link from "next/link";
 import { unstable_noStore as noStore } from "next/cache";
@@ -30,7 +30,7 @@ export default async function Home() {
         <section className={styles.scene} data-scene="1" aria-label="Introduction">
           <div className={styles.sceneContent}>
             <div
-              className={`${styles.textWrap} ${styles.textCenter}`}
+              className={`${styles.textWrap} ${styles.textEdgeLeft}`}
               data-anim="hero"
             >
               <p className={styles.eyebrow}>{SECTIONS.hero.eyebrow}</p>
@@ -49,48 +49,14 @@ export default async function Home() {
           <div className={styles.sceneContent}>
             <div className={styles.sceneSplit}>
               <div className={styles.creativeLeft} data-anim="creative" aria-hidden="true">
-                {SKILL_BARS_GROUP_1.map((bar) => (
+                {ARTIFACTS.map((artifact) => (
                   <div
-                    key={bar.label}
-                    className={styles.skillBar}
-                    data-skill-bar
+                    key={artifact.label}
+                    className={styles.artifactItem}
+                    data-artifact
                   >
-                    <span className={styles.skillDot} />
-                    <div
-                      className={styles.skillLine}
-                      style={{ width: `${bar.width}px` }}
-                    />
-                    <span className={styles.skillLabel}>{bar.label}</span>
-                  </div>
-                ))}
-                <div className={styles.skillAccent}>&#9670;</div>
-                {SKILL_BARS_GROUP_2.map((bar) => (
-                  <div
-                    key={bar.label}
-                    className={styles.skillBar}
-                    data-skill-bar
-                  >
-                    <span className={styles.skillDot} />
-                    <div
-                      className={styles.skillLine}
-                      style={{ width: `${bar.width}px` }}
-                    />
-                    <span className={styles.skillLabel}>{bar.label}</span>
-                  </div>
-                ))}
-                <div className={styles.skillAccent}>&#8734;</div>
-                {SKILL_BARS_GROUP_3.map((bar) => (
-                  <div
-                    key={bar.label}
-                    className={styles.skillBar}
-                    data-skill-bar
-                  >
-                    <span className={styles.skillDot} />
-                    <div
-                      className={styles.skillLine}
-                      style={{ width: `${bar.width}px` }}
-                    />
-                    <span className={styles.skillLabel}>{bar.label}</span>
+                    <span className={styles.artifactLabel}>{artifact.label}</span>
+                    <span className={styles.artifactValue}>{artifact.value}</span>
                   </div>
                 ))}
               </div>
@@ -216,7 +182,7 @@ export default async function Home() {
         <section className={styles.scene} data-scene="7" id="contact" aria-label="Contact">
           <div className={styles.sceneContent}>
             <div
-              className={`${styles.textWrap} ${styles.textCenter}`}
+              className={`${styles.textWrap} ${styles.textEdgeRight}`}
               data-anim="slide"
             >
               <span className={styles.chapter}>{SECTIONS.contact.chapter}</span>

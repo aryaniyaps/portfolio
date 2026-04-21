@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Orbitron, Rajdhani } from "next/font/google";
+import { Orbitron, Rajdhani, JetBrains_Mono } from "next/font/google";
 import {
   SITE_URL,
   SITE_NAME,
@@ -21,6 +21,13 @@ const rajdhani = Rajdhani({
   variable: "--font-body",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
+  display: "swap",
+});
+
+const jetbrains = JetBrains_Mono({
+  variable: "--font-code",
+  subsets: ["latin"],
+  weight: ["400", "500"],
   display: "swap",
 });
 
@@ -148,7 +155,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${orbitron.variable} ${rajdhani.variable}`}
+      className={`${orbitron.variable} ${rajdhani.variable} ${jetbrains.variable}`}
     >
       <body>
         <JsonLd />

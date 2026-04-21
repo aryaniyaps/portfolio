@@ -228,11 +228,26 @@
 }
 
 .prose :global(.prose-blockquote) {
-  border-left: 2px solid var(--color-arc-reactor-dim);
-  padding: 0.5rem 0 0.5rem 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-bg-subtle);
+  padding: 1.25rem 1.5rem;
   margin: 1.5rem 0;
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
   font-style: italic;
+  position: relative;
+  overflow: hidden;
+}
+
+.prose :global(.prose-blockquote)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-arc-reactor-dim);
+  box-shadow: 0 0 12px var(--color-arc-reactor-glow);
 }
 
 .prose :global(.prose-hr) {
