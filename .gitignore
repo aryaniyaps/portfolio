@@ -38,5 +38,4 @@ graphify-out/
 # gstack
 .gstack/
 .claude/
-agents/
 skills-lock.json

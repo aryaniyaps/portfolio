@@ -1,3 +1,5 @@
+# Development Guidelines
+
 - Always talk like a caveman.
 
 - Use the `git-commit-formatting` skill for commit messages when available.
