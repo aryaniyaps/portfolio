@@ -1,0 +1,445 @@
+---
+title: Persisted Queries with Relay, Strawberry GraphQL and FastAPI
+date: '2024-11-05'
+tags: ['python', 'fastapi', 'graphql', 'strawberry graphql', 'relay', 'react', 'javascript', 'frontend', 'backend']
+draft: false
+layout: PostSimple
+images: []
+summary: In this tutorial, we’ll walk through how to integrate Strawberry GraphQL and FastAPI with Relay to enable persisted queries, which can significantly boost the performance of GraphQL applications. We’ll cover setting up a Relay environment on the client side, configuring a GraphQL server to handle persisted queries, and extending the Strawberry GraphQL schema to manage these queries.
+---
+
+In this tutorial, we’re going to explore how to set up persisted queries with Strawberry GraphQL, FastAPI and Relay. Persisted queries improve performance by letting the client send only a unique identifier for a query to the server, which then retrieves and executes the full query. This reduces the payload size, improves caching, and enhances security.
+
+### What is Relay?
+
+Relay is a powerful JavaScript framework developed by Facebook for managing data-fetching in React applications. It’s specifically designed to work with GraphQL and offers a streamlined way to manage queries and mutations. Relay helps optimize network requests and makes it easier to manage large applications by automatically handling caching, pagination, and data-fetching logic on the client side.
+
+### What are Persisted Queries?
+
+Persisted queries are GraphQL queries that are stored on the server with unique identifiers (query IDs). Instead of sending the entire query each time, the client can simply send the query ID along with any variables. The server can then retrieve and execute the stored query.
+
+This approach offers several benefits:
+
+- **Performance**: Reduces the payload size, especially useful for low-bandwidth clients.
+- **Security**: Minimizes the chance of clients sending unvalidated or unintended queries.
+- **Caching**: Allows easier caching of frequently used queries, reducing load on the server.
+
+Let’s dive into the setup to implement persisted queries with Strawberry GraphQL and Relay.
+
+---
+
+There are two ways to setup persisted queries with relay:
+
+1. **Server Persisted queries** - Run a local server that updates a query map server-side upon requests from the Relay client.
+2. **Local Persisted queries** - Generate the query map client side (using Relay) and push it to the server at compile time/ runtime.
+
+---
+
+## Server Persisted Queries
+
+In this section, we’ll implement persisted queries using a server-based method to store and manage query IDs.
+
+### Step 1: Configure Relay on the Client Side
+
+First, let’s configure Relay in the client application. Ensure Relay is set up properly and that the Relay environment is configured. In your package.json, add the Relay configuration with the URL of your persisted query server:
+
+```json:package.json
+{
+  "relay": {
+    "src": "./src",
+    "language": "typescript",
+    "schema": "./schema.graphql",
+    "persistConfig": {
+      "url": "http://localhost:2999",
+      "params": {}
+    }
+  }
+}
+```
+
+This configuration specifies the location of the schema file and the URL for the persisted query server.
+
+Next, create a function to fetch the queries. This function should send the query ID to the persisted query server, which will retrieve and execute the query on the server.
+
+```typescript:lib/relay-environment.ts
+import { Environment, Network, RecordSource, Store } from 'relay-runtime'
+
+function fetchQuery(operation, variables) {
+  return fetch('http://localhost:8000/graphql', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      document_id: operation.id, // pass the persisted query ID
+      variables,
+    }),
+  }).then((response) => {
+    return response.json()
+  })
+}
+
+const environment = new Environment({
+  network: Network.create(fetchQuery),
+  store: new Store(new RecordSource()),
+})
+```
+
+This code sets up a Relay environment with a fetchQuery function that references the query by its unique ID, sending it to the server for execution.
+
+### Step 2: Run the Persist Server
+
+On the server side, we need a way to store and retrieve these persisted queries. Here’s a Python script that will act as a simple server for handling and saving these queries:
+
+```python:run_persist_server.py
+import argparse
+import json
+from hashlib import md5
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from pathlib import Path
+from urllib.parse import parse_qs
+
+class QueryMap:
+    def __init__(self, file_map_name: Path):
+        """Initializes the QueryMap with a file path for storage."""
+        self.file_map_name = file_map_name
+        self.query_map = self._load_or_initialize_map()
+
+    def _load_or_initialize_map(self) -> dict:
+        """Loads the map from file if it exists; otherwise, initializes an empty map."""
+        if self.file_map_name.exists():
+            with self.file_map_name.open("r") as file:
+                return json.load(file)
+        else:
+            self._flush({})
+            return {}
+
+    def _flush(self, data: dict = None) -> None:
+        """Writes the current map to file."""
+        with self.file_map_name.open("w") as file:
+            json.dump(data or self.query_map, file)
+
+    def save_query(self, text: str) -> str:
+        """Generates a unique ID for the given text and saves it in the map."""
+        query_id = md5(text.encode()).hexdigest()
+        self.query_map[query_id] = text
+        self._flush()
+        return query_id
+
+class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
+    def do_POST(self):
+        """Handles POST requests by saving the text query and responding with its ID."""
+        if self.headers.get("Content-Type") != "application/x-www-form-urlencoded":
+            self._send_response(400, 'Only "application/x-www-form-urlencoded" requests are supported.')
+            return
+
+        content_length = int(self.headers["Content-Length"])
+        post_data = self.rfile.read(content_length).decode()
+        params = parse_qs(post_data)
+        text = params.get("text", [None])[0]
+
+        if text is None:
+            self._send_response(400, "Expected `text` parameter in the POST.")
+            return
+
+        query_id = query_map.save_query(text)
+        response_data = json.dumps({"id": query_id})
+        self._send_response(200, response_data, content_type="application/json")
+
+    def _send_response(self, status_code: int, message: str, content_type: str = "text/plain") -> None:
+        """Helper method to send a response with the given status code and message."""
+        self.send_response(status_code)
+        self.send_header("Content-Type", content_type)
+        self.end_headers()
+        self.wfile.write(message.encode())
+
+def main():
+    parser = argparse.ArgumentParser(description="Run a simple HTTP server for query storage.")
+    parser.add_argument("--port", type=int, default=2999, help="Port to run the server on")
+    parser.add_argument("--host", type=str, default="127.0.0.1", help="Host to run the server on")
+    parser.add_argument("--file", type=str, default="query_map.json", help="File name for storing queries")
+
+    args = parser.parse_args()
+    port = args.port
+    host = args.host
+    file_map_name = Path(args.file)
+
+    global query_map
+    query_map = QueryMap(file_map_name)
+
+    server = HTTPServer((host, port), SimpleHTTPRequestHandler)
+    print(f"Server listening on port {port}")
+    server.serve_forever()
+
+if __name__ == "__main__":
+    main()
+```
+
+> [!NOTE]
+> You can also store your queries in a database here
+
+This script implements a simple HTTP server that listens for POST requests, allowing clients to submit text queries. Each query is saved with a unique ID generated from an MD5 hash of the text. The server stores these queries in a JSON file, ensuring data persistence even if the server restarts.
+
+#### High-Level Breakdown
+
+1. **Query Handling and Storage:**
+   Upon receiving a POST request with a text parameter, the server:
+
+- Generates a unique ID for the text using an MD5 hash.
+- Saves this ID-text mapping in a JSON file (specified by the file argument).
+- Responds with the generated ID in JSON format, enabling clients to store them.
+
+2. **JSON Query Storage:**
+
+- The script loads the existing data from the JSON file at startup (if the file exists).
+- New queries are appended to this file, providing a persistent storage solution.
+
+You can run the script with the following command:
+
+```bash
+python run_persist_server.py --file query_map.json --port 2999 --host 127.0.0.1
+```
+
+### Step 3: Create a Custom Strawberry GraphQL Schema Extension
+
+To use persisted queries, we’ll extend our Strawberry GraphQL schema with a custom schema extension. This extension allows the server to recognize query IDs and look up the corresponding query text.
+
+```python:app/extensions.py
+import json
+from collections.abc import AsyncIterator, Iterator
+
+# Add import for loading persisted queries
+from pathlib import Path
+
+from graphql import ExecutionResult, GraphQLError
+from strawberry.extensions import SchemaExtension
+
+
+class PersistedQueriesExtension(SchemaExtension):
+    def __init__(self, *, persisted_queries_path: Path) -> None:
+        self.cache: dict[str, str] = {}
+
+        with Path.open(persisted_queries_path, "r") as f:
+            self.cache = json.load(f)
+
+    async def on_operation(self) -> AsyncIterator[None] | Iterator[None]:
+        body = await self.execution_context.context.get("request").json()
+        document_id = body.get("document_id")
+        persisted_query = self.cache.get(document_id)
+        if persisted_query is None:
+            self.execution_context.result = ExecutionResult(
+                data=None,
+                errors=[
+                    GraphQLError("Invalid query provided."),
+                ],
+            )
+        else:
+            self.execution_context.query = persisted_query
+        yield
+```
+
+This extension retrieves queries from the `persisted_queries_path` and stores them in a cache. When a client requests a query, it checks if the query ID is valid. If the query isn’t found, an error is returned.
+
+### Step 4: Add the Extension to Your Schema
+
+Next, you need to add it to your Strawberry GraphQL schema. This is done by including the extension when instantiating the schema, so that the persisted query mechanism is activated for every request.
+
+```python:schema.py
+from pathlib import Path
+
+from strawberry import Schema
+from app.extensions import PersistedQueriesExtension
+
+schema = Schema(
+    query=query,
+    mutation=mutation,
+    extensions=[
+        PersistedQueriesExtension(
+            persisted_queries_path=Path("query_map.json")
+        ),
+    ],
+)
+```
+
+This completes the configuration, and your server is now ready to handle persisted queries.
+
+> [!IMPORTANT]
+> If you are setting up persisted queries with a project that already has generated definitions, the persisted queries won't be sent to the specified URI.
+> You need to clear the generated definitions and rerun the Relay compiler.
+
+---
+
+## Local Persisted Queries
+
+### Step 1: Configure Relay on the Client Side
+
+First, let’s configure Relay in the client application. Ensure Relay is set up properly and that the Relay environment is configured. In your package.json, add the following Relay configuration:
+
+```json:package.json
+{
+  "relay": {
+    "src": "./src",
+    "language": "typescript",
+    "schema": "./schema.graphql",
+    "persistConfig": {
+      "file": "./query_map.json",
+      "algorithm": "MD5" // this can be one of MD5, SHA256, SHA1
+    }
+  }
+}
+```
+
+This configuration specifies the location of the local persisted queries file.
+
+Next, create a function to fetch the queries. This function should send the query ID to the persisted query server, which will retrieve and execute the query on the server.
+
+```typescript:lib/relay-environment.ts
+import { Environment, Network, RecordSource, Store } from 'relay-runtime'
+
+function fetchQuery(operation, variables) {
+  return fetch('http://localhost:8000/graphql', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      document_id: operation.id, // pass the persisted query ID
+      variables,
+    }),
+  }).then((response) => {
+    return response.json()
+  })
+}
+
+const environment = new Environment({
+  network: Network.create(fetchQuery),
+  store: new Store(new RecordSource()),
+})
+```
+
+This code sets up a Relay environment with a fetchQuery function that references the query by its unique ID, sending it to the server for execution.
+
+### Step 2: Write a Script to Push Queries during Compile Time
+
+Because our client and server projects are separate, a valid option is to have an additional npm run script to push the query map at compile time to a location accessible by your server:
+
+```json:package.json
+"scripts": {
+  "push-queries": "node ./pushQueries.js",
+  "relay": "relay-compiler && npm run push-queries"
+}
+```
+
+Here is a script that pushes the `query_map.json` file in the `client` directory to the `query_map.json` file in the server directory.
+
+```javascript:pushQueries.js
+const fs = require('fs')
+const path = require('path')
+
+// Define paths
+const clientDir = path.join(__dirname, 'client')
+const serverDir = path.join(__dirname, 'server')
+const sourceFile = path.join(clientDir, 'query_map.json')
+const destFile = path.join(serverDir, 'query_map.json')
+
+// Check if source file exists
+fs.access(sourceFile, fs.constants.F_OK, (err) => {
+  if (err) {
+    console.error(`Source file ${sourceFile} does not exist.`)
+    process.exit(1)
+  } else {
+    // Copy the file
+    fs.copyFile(sourceFile, destFile, (err) => {
+      if (err) {
+        console.error(`Error copying file: ${err}`)
+        process.exit(1)
+      } else {
+        console.log(`Copied ${sourceFile} to ${destFile}`)
+      }
+    })
+  }
+})
+```
+
+With this in place, every time the relay compiler runs, changes can be synced with the server.
+
+> [!NOTE]
+> You could also push to another git repository (where your server resides, if applicable) or store the queries in a database here.
+
+### Step 3: Create a Custom Strawberry GraphQL Schema Extension
+
+To use persisted queries, we’ll extend our Strawberry GraphQL schema with a custom schema extension. This extension allows the server to recognize query IDs and look up the corresponding query text.
+
+```python:app/extensions.py
+import json
+from collections.abc import AsyncIterator, Iterator
+
+# Add import for loading persisted queries
+from pathlib import Path
+
+from graphql import ExecutionResult, GraphQLError
+from strawberry.extensions import SchemaExtension
+
+
+class PersistedQueriesExtension(SchemaExtension):
+    def __init__(self, *, persisted_queries_path: Path) -> None:
+        self.cache: dict[str, str] = {}
+
+        with Path.open(persisted_queries_path, "r") as f:
+            self.cache = json.load(f)
+
+    async def on_operation(self) -> AsyncIterator[None] | Iterator[None]:
+        body = await self.execution_context.context.get("request").json()
+        document_id = body.get("document_id")
+        persisted_query = self.cache.get(document_id)
+        if persisted_query is None:
+            self.execution_context.result = ExecutionResult(
+                data=None,
+                errors=[
+                    GraphQLError("Invalid query provided."),
+                ],
+            )
+        else:
+            self.execution_context.query = persisted_query
+        yield
+```
+
+This extension retrieves queries from the `persisted_queries_path` and stores them in a cache. When a client requests a query, it checks if the query ID is valid. If the query isn’t found, an error is returned.
+
+### Step 4: Add the Extension to Your Schema
+
+Next, you need to add it to your Strawberry GraphQL schema. This is done by including the extension when instantiating the schema, so that the persisted query mechanism is activated for every request.
+
+```python:schema.py
+from pathlib import Path
+
+from strawberry import Schema
+from app.extensions import PersistedQueriesExtension
+
+schema = Schema(
+    query=query,
+    mutation=mutation,
+    extensions=[
+        PersistedQueriesExtension(
+            persisted_queries_path=Path("query_map.json")
+        ),
+    ],
+)
+```
+
+This completes the configuration, and your server is now ready to handle persisted queries.
+
+---
+
+### Conclusion
+
+You’ve now set up Strawberry GraphQL with Relay and enabled persisted queries! This approach optimizes performance by allowing your client application to reference and execute stored queries via unique identifiers. By setting up persisted queries, you can significantly reduce the payload size, enhance caching, and secure your GraphQL queries.
+
+Consider exploring other features of Strawberry and Relay to further customize and optimize your GraphQL applications.
+
+### Resources- Further Learning
+
+- [GraphQL Relay- Persisted Queries](https://relay.dev/docs/guides/persisted-queries)
+- [Understanding Persisted Queries](https://www.brightspot.com/documentation/brightspot-cms-developer-guide/graphql-understanding-persisted-queries)
+- [Strawberry GraphQL- Custom Extensions](https://strawberry.rocks/docs/guides/custom-extensions)
+- [Strawberry GraphQL- Relay](https://strawberry.rocks/docs/guides/relay)

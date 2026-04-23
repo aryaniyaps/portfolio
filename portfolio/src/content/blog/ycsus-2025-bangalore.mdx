@@ -1,0 +1,128 @@
+---
+title: "Why Pre-AI Advice is Dead: Unlearning at YC SUS Bangalore 2025"
+date: '2026-04-19'
+tags: ['startups', 'y-combinator', 'ai', 'product-engineering', 'founder-journey']
+draft: false
+layout: PostSimple
+images: []
+summary: I went to YC Startup School expecting to hear about genius day-one ideas. Instead, I learned why you should ignore current AI limitations, treat regulatory hell as a moat, and throw out pre-AI startup advice entirely.
+---
+
+"Don't listen to advice from people in the pre-AI era."
+
+That single sentence from the founder of Groww encapsulated my entire experience at YC Startup School (YC SUS) 2025 in Bangalore. I was thrilled—and honestly, a bit surprised—to be selected. I went in expecting to learn the secret framework for generating the perfect billion-dollar idea on day one. 
+
+Instead, I spent the event unlearning almost everything I thought I knew about building startups.
+
+Here is what actually works when you are building at the cutting edge.
+
+## Relentless Execution > Day-One Ideas
+
+We are taught to romanticize the "aha!" moment. But listening to Aadit Palicha, the founder of Zepto, completely shattered that illusion.
+
+Zepto didn't start as a 10-minute delivery juggernaut. It started as Kirana Kart. They were trying to solve a problem in a space already dominated by giants like Amazon and Flipkart. The transition to dark stores and ultra-fast delivery wasn't a day-one masterplan; it was the result of a ruthless pivot.
+
+They weren't the first movers in grocery delivery. But they recognized that the first-mover advantage is mostly a myth. The *second-mover* advantage—capitalizing on the market education done by your predecessors while fixing their broken UX and operational inefficiencies—is where the actual value is captured. 
+
+Great companies aren't born from perfect ideas. They are the result of relentless execution and multiple pivots until you slam into the right market opportunity.
+
+## The Regulatory Moat
+
+As a technical builder, I've always admired founders who start in the codebase and eventually scale into the executive suite. Harshil Mathur, CEO of Razorpay, is exactly that prototype.
+
+His story was a brutal reality check on building in fintech. For the first entire year of Razorpay's existence, they couldn't process a single transaction. They were trapped waiting for licenses. At one point, their banking providers pulled out at the last minute, completely freezing their accounts. 
+
+When you hit regulatory walls like that, the instinct is to pivot to an easier market. But Mathur framed this entirely differently: **regulation is a moat.**
+
+<Callout type="important">
+If the market seems unfair and the regulations seem impossible to navigate, remember that the same friction applies to everyone else trying to enter your space. 
+</Callout>
+
+Once you bleed through the pain of compliance and secure your infrastructure, you have built a fortress that casual competitors cannot breach.
+
+<ProConList
+  benefits={[
+    "High barrier to entry keeps lightweight competitors out.",
+    "Forces deep, systemic integration with institutional partners.",
+    "Early pain translates directly into a long-term competitive moat."
+  ]}
+  limitations={[
+    "Brutal early days with high existential risk.",
+    "Development speed is entirely bottlenecked by slow-moving institutions."
+  ]}
+/>
+
+## Skate to Where the AI is Going
+
+One of the most technical and liberating insights came from the CEO of Emergent Labs. 
+
+When building AI products, it is incredibly easy to get bogged down engineering complex workarounds for current model limitations. For example, older models were notoriously bad at outputting reliable JSON.
+
+The naive approach is to spend three weeks writing defensive code, regex parsers, and retry logic to coerce the LLM into giving you what you want.
+
+```typescript:src/lib/ai-parser.ts
+// The trap: Wasting engineering cycles fixing temporary LLM flaws
+export async function parseUnreliableLLMOutput(rawText: string): Promise<UserData> {
+  try {
+    // Attempt 1: Direct parse
+    return JSON.parse(rawText);
+  } catch {
+    // Attempt 2: Regex extraction (The dark path)
+    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      return JSON.parse(jsonMatch[0]);
+    }
+    // Attempt 3: Beg the LLM to try again
+    throw new Error("Failed to parse. Please implement an agentic retry loop.");
+  }
+}
+```
+
+Emergent Labs took the opposite approach: **they skipped the problem entirely.** 
+
+They predicted that within a few months, the foundational models would get inherently better at structural outputs (and they were right). Instead of wasting engineering cycles fixing a temporary flaw, they capitalized on the momentum of the underlying technology and focused their energy on the core product experience.
+
+<MemeImage
+  src="/images/blog/ycsus-2025/drake-ai-json.png"
+  alt="Drake passing meme: Writing 500 lines of regex to fix LLM output vs Waiting two months for the model to update"
+/>
+
+The motto of the event was *“Live in the future and build what’s missing.”* You can't live in the future if you're spending all your time patching the present.
+
+## Stickiness > Everything
+
+This brings us back to the advice from Groww. They started with a robo-advisor for consumers in fintech. It didn't work. 
+
+Their pivot was extreme: introduce mutual funds with 0% commission to guarantee the absolute best customer experience. They burned a massive amount of upfront capital to do this. But their thesis was simple: if your Customer Acquisition Cost (CAC) drops because the product is wildly sticky, and your user retention is near-perfect, you cannot lose. 
+
+Once they captured the user base, they easily expanded into profitable new verticals like stocks.
+
+<Callout type="note">
+The rules of user acquisition have changed. Pre-AI advice assumes a certain cost of building and scaling. When AI drops the floor out of development costs, your only true leverage is user stickiness.
+</Callout>
+
+## 20,000 Lines a Day: Jared Friedman's Blueprint
+
+Jared Friedman took the stage and dropped a masterclass for the 2,000 future founders in the room. His thesis? We are at the bleeding edge of a second wave of Indian companies that will build world-class, AI-native products for the global market, modeled after companies like Emergent and Giga.
+
+He laid out a brutal, high-signal framework for how to actually win right now:
+
+**Execution > Originality:** You don't need to be first. Zepto, Emergent, Giga—none were first movers. The ultimate hack is finding an idea that shows promise and simply out-executing everyone else. 
+
+**The Talent Arbitrage:** Indian teams can absolutely beat US teams building global products. The engineering talent density here is on another level, and in the AI era, elite engineering speed is the only moat.
+
+**Live at the Edge:** If you aren't experimenting with the latest models and the newest open-source repos, you're already behind. You have to stay in the flow of information—curate your X feed and listen to the right podcasts to know what the smartest builders are hacking on.
+
+**Tinkering Over Suits:** The best companies don't start with someone explicitly trying to "be a founder." They start with curious devs tinkering with new tech just for fun. India needs more of this hacker culture.
+
+**The Youth Leverage:** Founders are getting younger. Aadit started Zepto at 18; the Giga founders hit SF at 20. The ultimate advantage right now is the sheer velocity at which you can learn and adapt.
+
+<Callout type="important">
+  **Push AI Coding to the Max:** One engineer can now do the work of a 100-person team from a year ago. The best builders are generating 20K lines of code a day. You have to be building at Garry Tan speeds.
+</Callout>
+
+## The Energy
+
+Being in Bangalore, surrounded by people building the next generation of infrastructure, was genuinely electric. Getting access to the YC community and the AI credits they provided is a massive unlock for anyone trying to stay at the cutting edge.
+
+The tools are better than ever, the barrier to entry for writing code is dropping to zero, and old advice is officially a liability. There has never been a better time to build.

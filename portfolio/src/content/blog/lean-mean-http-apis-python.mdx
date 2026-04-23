@@ -1,0 +1,136 @@
+---
+title: My Tech Stack for building lean and mean HTTP APIs with Python
+date: '2024-11-20'
+tags: ['tech stack', 'python', 'http', 'backend']
+draft: false
+layout: PostSimple
+images: []
+summary: When it comes to building lightweight and efficient HTTP APIs, Python offers a fantastic ecosystem of tools that enable you to create robust, scalable, and maintainable backends. In this post, I'll walk you through my tech stack for building lean and mean APIs with Python. Each component has been chosen to maximize efficiency, readability, and modern best practices.
+---
+
+When it comes to building lightweight and efficient HTTP APIs, Python offers a fantastic ecosystem of tools that enable you to create robust, scalable, and maintainable backends.
+
+Personally, as an aspiring technical startup founder, iteration speed is crucial when building apps, which this tech stack reflects. Python, in particular, strikes the perfect balance for me. Not only am I
+familiar and enjoy programming with it, but it also allows for insanely fast iteration speeds, making it my ideal choice for crafting APIs.
+
+Plus, there is no bloat across the tech stack. Each framework in my stack is purpose-built, doing exactly what it’s meant to do—nothing more, nothing less.
+
+<p align="left">
+  <img src="/images/blog/lean-mean-python-http-apis/type-hints-everywhere.jpg" />
+</p>
+
+I’ve grown to appreciate type hints in Python for how they reduce bugs and simplify development. By explicitly defining expected types for variables and functions, my code becomes easier to understand and maintain.
+Tools like mypy catch errors early, while smarter IDE suggestions speed up iteration. Type hints add clarity and make refactoring smoother as projects grow—a small change with a big impact.
+
+The tools in my tech stack reflect this, they make the most out of type hints wherever possible.
+
+## FastAPI: Web Framework
+
+[FastAPI](https://fastapi.tiangolo.com) is my go-to microframework for HTTP API development. It strikes the perfect
+balance between minimalism and power, providing a robust foundation for building APIs without the overhead of full-stack
+frameworks like Django.
+
+### Key Features
+
+- **Asynchronous by Design**: Unlike Flask, which is based on WSGI, FastAPI supports ASGI, making it ideal for modern applications.
+- **Type Annotations**: It leverages Python's type hints to provide built-in validation and interactive API documentation via OpenAPI (Swagger UI).
+- **Dependency Injection**: FastAPI has a powerful and declarative dependency injection system, making resource management simpler and more maintainable.
+
+Why not Django? Django shines for full-stack development with HTML templates and admin panels, but for APIs, FastAPI's modern features and speed make it a clear winner.
+I usually use a separate framework for the frontend like React/ Next.js, so this works for me.
+
+## SQLAlchemy: Database Access
+
+For database interactions, I use [SQLAlchemy](https://sqlalchemy.org), the defacto Object-Relational Mapping (ORM) library in Python. It provides a seamless way to work with databases through Python objects, abstracting away raw SQL.
+
+### Key Features
+
+- **Async Support**: SQLAlchemy now supports asynchronous capabilities, which I use with asyncpg and PostgreSQL.
+- **Flexibility**: While I often use its ORM features, SQLAlchemy allows for direct SQL queries when needed, ensuring no trade-offs on performance or flexibility.
+
+## Alembic: Database Migrations
+
+Database migrations are a crucial part of any backend project, and that's where [Alembic](https://alembic.sqlalchemy.org/en/latest/) comes in.
+
+As a companion to SQLAlchemy, it provides:
+
+- Schema migrations that track changes to your database schema.
+- A straightforward command-line interface to create and apply migrations.
+- Tight integration with SQLAlchemy models for consistency across your database and code.
+
+## Pydantic: Data Validation/ Parsing
+
+FastAPI and Pydantic are a match made in heaven. [Pydantic](https://docs.pydantic.dev) is a data validation library that ensures your inputs are clean and follow the expected structure.
+It is also very performant, with its core being written in Rust.
+
+Why Pydantic?
+
+- **Model Validation**: Pydantic models define and validate request and response data with ease.
+- **Performance**: It's built with speed in mind, leveraging Python's type hints for fast, accurate data validation.
+- **Integration**: It's baked into FastAPI, so you can focus on business logic rather than repetitive validation code.
+
+## Uvicorn: ASGI Web Server
+
+FastAPI requires an ASGI server to run, and [Uvicorn](https://www.uvicorn.org/) is the perfect choice. It’s a lightning-fast ASGI server that supports HTTP/2 and WebSockets, ensuring your app is future-proof.
+For ultimate performance, I always use [uvloop](https://github.com/MagicStack/uvloop) (a blazing fast asyncio event loop) and [httptools](https://github.com/MagicStack/httptools) (a fast HTTP parser) alongside Uvicorn whenever possible.
+
+Why Uvicorn?
+
+- Simple to set up and deploy.
+- Built on top of asyncio for high performance.
+- Plays nicely with other ASGI middleware.
+
+> [!NOTE]
+>
+> #### Deploying to AWS Lambda?
+>
+> For serverless environments like AWS Lambda, I use [Mangum](https://mangum.fastapiexpert.com/) to seamlessly adapt my FastAPI application to the Lambda runtime, making deployments both simple and efficient.
+
+An alternative I’m eager to explore is [Granian](https://github.com/emmett-framework/granian), an ASGI server written from scratch in Rust. Its design promises exceptional performance and scalability, making it an exciting option for future projects.
+
+## Structlog: Logging with Context
+
+Logging is essential for debugging and monitoring, and [Structlog](https://www.structlog.org/en/stable/) brings clarity to this task.
+
+Unlike Python’s built-in logging, Structlog provides:
+
+- **Structured Logging**: Log entries are more readable and easier to analyze.
+- **JSON Support**: Out-of-the-box support for logging in JSON format, which is great for tools like Elasticsearch or Splunk.
+- **Asynchronous Context Support**: Perfect for FastAPI’s async ecosystem.
+
+## Taskiq: Task Queues for Background Processing
+
+For handling background tasks or worker queues, [Taskiq](https://taskiq-python.github.io/) is my library of choice. It integrates seamlessly with FastAPI to offload long-running operations.
+It also has support for advanced features such as global middlewares and dependency injection.
+
+Use cases include:
+
+- Sending emails or notifications.
+- Processing large datasets.
+- Integrating with third-party APIs asynchronously.
+
+Taskiq’s lightweight approach makes it a strong competitor to Celery for smaller to medium-scale applications.
+
+## PyTest: Pythonic Testing
+
+[PyTest](https://docs.pytest.org/en/stable/) is my preferred testing framework. It’s simple, extensible, and designed with Pythonic principles. I would say that it is far better than the rather old and unintuitive built-in testing library Python provides.
+
+- **Fixtures**: Write reusable setups for your tests.
+- **Plugins**: Extend functionality with a variety of plugins.
+- **Readable Syntax**: The syntax is clean, making tests easy to write and understand.
+
+### Plug and play- use when required
+
+_I use the following frameworks in my tech stack only when there is an explicit need for it:_
+
+## Strawberry GraphQL: GraphQL Library
+
+I use GraphQL in my applications whenever there is a need for intense data fetching/ a need to support multiple clients from the same API. When I choose to use GraphQL in
+my tech stack, the best tool in the Python ecosystem is [Strawberry GraphQL](https://strawberry.rocks).
+
+### Key Features
+
+- **Type Annotations**: Intuitive API that maps python type annotations to GraphQL types
+- **Code First Development**: Allows us to export code into schema, which is powerful and helps code reuse, unlike other libraries like [Ariadne](https://ariadnegraphql.org/) that follow a schema first approach
+- **Async Support**: Supports async/await out of the box
+- **Federation Support**: Supports Apollo Federation whenever required, usually applicable when using a microservice architecture

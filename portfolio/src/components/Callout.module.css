@@ -1,0 +1,158 @@
+.callout {
+  border-radius: 6px;
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-subtle);
+  position: relative;
+  overflow: hidden;
+}
+
+.callout::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+}
+
+.calloutNote::before {
+  background: var(--color-arc-reactor);
+  box-shadow: 0 0 12px var(--color-arc-reactor-glow);
+}
+.calloutNote {
+  background: var(--color-arc-reactor-glow);
+  border-color: rgba(0, 212, 255, 0.2);
+}
+
+.calloutImportant::before {
+  background: var(--color-gold);
+  box-shadow: 0 0 12px rgba(212, 164, 0, 0.3);
+}
+.calloutImportant {
+  background: rgba(212, 164, 0, 0.08);
+  border-color: rgba(212, 164, 0, 0.2);
+}
+
+.calloutWarning::before {
+  background: var(--color-repulsor);
+  box-shadow: 0 0 12px rgba(255, 59, 59, 0.3);
+}
+.calloutWarning {
+  background: rgba(255, 59, 59, 0.08);
+  border-color: rgba(255, 59, 59, 0.2);
+}
+
+.calloutTip::before {
+  background: #4ade80;
+  box-shadow: 0 0 12px rgba(74, 222, 128, 0.3);
+}
+.calloutTip {
+  background: rgba(74, 222, 128, 0.06);
+  border-color: rgba(74, 222, 128, 0.2);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-family: var(--font-body);
+  font-size: var(--text-small);
+  font-weight: 600;
+  letter-spacing: var(--tracking-normal);
+  text-transform: uppercase;
+}
+
+.headerNote {
+  color: var(--color-arc-reactor);
+}
+
+.headerImportant {
+  color: var(--color-gold);
+}
+
+.headerWarning {
+  color: var(--color-repulsor);
+}
+
+.headerTip {
+  color: #4ade80;
+}
+
+.icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+}
+
+.content {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+}
+
+.content p {
+  margin-bottom: 0.5rem;
+}
+
+.content p:last-child {
+  margin-bottom: 0;
+}
+
+.content code {
+  font-family: "JetBrains Mono", "Fira Code", "SF Mono", Menlo, monospace;
+  font-size: 0.8125rem;
+  color: var(--color-arc-reactor);
+  background: var(--color-bg-elevated);
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+  border: 1px solid var(--color-border);
+}
+
+.content a {
+  color: var(--color-arc-reactor);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-arc-reactor-dim);
+  transition:
+    border-color var(--duration-fast) var(--ease),
+    color var(--duration-fast) var(--ease);
+}
+
+.content a:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-text-primary);
+}
+
+.content strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.content em {
+  color: var(--color-arc-reactor);
+  font-style: italic;
+}
+
+.content ul {
+  list-style: none;
+  margin: 0.5rem 0 0 1.5rem;
+}
+
+.content ul li {
+  position: relative;
+  padding-left: 1rem;
+  margin-bottom: 0.35rem;
+}
+
+.content ul li::before {
+  content: "▸";
+  position: absolute;
+  left: -0.25rem;
+  color: var(--color-arc-reactor);
+  font-size: 0.75rem;
+  top: 0.15rem;
+}
