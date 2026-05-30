@@ -157,6 +157,9 @@ export default function RootLayout({
       lang="en"
       className={`${orbitron.variable} ${rajdhani.variable} ${jetbrains.variable}`}
     >
+      <head>
+        <link rel="me" href="https://mastodon.social/@aryaniyaps" />
+      </head>
       <body>
         <JsonLd />
         {children}
