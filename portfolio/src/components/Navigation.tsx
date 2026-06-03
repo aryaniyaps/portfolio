@@ -26,7 +26,7 @@ export default function Navigation() {
         <Link href="/" className={styles.navBrand}>
           ARYAN IYAPPAN
         </Link>
-        <span className={styles.navTagline}>Technical Founder</span>
+        <span className={styles.navTagline}>Aspiring Founder</span>
       </div>
       <div className={styles.navCard}>
         {NAV_LINKS.map((link, i) => (

@@ -290,7 +290,7 @@ export const NAV_LINKS = [
 
 export const SECTIONS = {
   hero: {
-    eyebrow: "TECHNICAL FOUNDER \u00B7 BUILDER \u00B7 OPERATOR",
+    eyebrow: "ASPIRING FOUNDER \u00B7 BUILDER \u00B7 OPERATOR",
     heading: ["ARYAN", "IYAPPAN"],
     tagline: "Making sense of complexity, one system at a time",
   },

@@ -2,7 +2,7 @@ export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://aryaniyaps.vercel.app";
 export const SITE_NAME = "Aryan Iyappan";
 export const SITE_DESCRIPTION =
-  "Technical founder, systems architect, and operator. AWS Certified Developer, Google Cloud Engineer, and open-source contributor building companies that last.";
+  "Aspiring founder, systems architect, and operator. AWS Certified Developer, Google Cloud Engineer, and open-source contributor building companies that last.";
 export const SITE_TWITTER = "@aryaniyaps";
 
 export const SOCIAL_LINKS = {
@@ -13,7 +13,7 @@ export const SOCIAL_LINKS = {
 
 export const KEYWORDS = [
   "Aryan Iyappan",
-  "technical founder",
+  "aspiring founder",
   "AI engineer",
   "full-stack developer",
   "systems architect",

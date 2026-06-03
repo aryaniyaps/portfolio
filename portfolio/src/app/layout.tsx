@@ -32,7 +32,7 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Aryan Iyappan — Technical Founder & AI Engineer",
+  title: "Aryan Iyappan — Aspiring Founder & AI Engineer",
   description: SITE_DESCRIPTION,
   keywords: [...KEYWORDS],
   authors: [{ name: "Aryan Iyappan", url: SITE_URL }],
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     canonical: SITE_URL,
   },
   openGraph: {
-    title: "Aryan Iyappan — Technical Founder & AI Engineer",
+    title: "Aryan Iyappan — Aspiring Founder & AI Engineer",
     description: SITE_DESCRIPTION,
     url: SITE_URL,
     siteName: SITE_NAME,
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Aryan Iyappan — Technical Founder & AI Engineer",
+    title: "Aryan Iyappan — Aspiring Founder & AI Engineer",
     description: SITE_DESCRIPTION,
     creator: SITE_TWITTER,
   },
@@ -96,7 +96,7 @@ function JsonLd() {
     name: "Aryan Iyappan",
     url: SITE_URL,
     image: `${SITE_URL}/opengraph-image`,
-    jobTitle: "Technical Founder",
+    jobTitle: "Aspiring Founder",
     description: SITE_DESCRIPTION,
     sameAs: [SOCIAL_LINKS.github, SOCIAL_LINKS.linkedin],
     knowsAbout: [

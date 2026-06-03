@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Aryan Iyappan — Technical Founder & AI Engineer";
+export const alt = "Aryan Iyappan — Aspiring Founder & AI Engineer";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -95,7 +95,7 @@ export default async function Image() {
               marginBottom: "24px",
             }}
           >
-            TECHNICAL FOUNDER · AI ENGINEER · BUILDER
+            ASPIRING FOUNDER · AI ENGINEER · BUILDER
           </div>
           <div
             style={{
