@@ -1,9 +1,17 @@
 {
+  "scripts": {
+    "dev": "npm --prefix portfolio run dev",
+    "build": "npm --prefix portfolio run build",
+    "start": "npm --prefix portfolio run start",
+    "lint": "npm --prefix portfolio run lint",
+    "vercel": "vercel portfolio",
+    "vercel:dev": "vercel dev portfolio",
+    "vercel:prod": "vercel portfolio --prod",
+    "vercel-build": "npm --prefix portfolio run build",
+    "prepare": "husky"
+  },
   "devDependencies": {
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0"
-  },
-  "scripts": {
-    "prepare": "husky"
   }
 }

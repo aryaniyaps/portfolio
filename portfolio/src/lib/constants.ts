@@ -1,5 +1,5 @@
 export const ARTIFACTS = [
-  { label: "STRAWBERRY GRAPHQL", value: "OSS CONTRIBUTOR" },
+  { label: "OPEN SOURCE", value: "STRAWBERRY \u00B7 OBSERVAL" },
   { label: "HOSPITALJOBS.IN", value: "FOUNDER \u00B7 GTM, SALES & PRODUCT" },
   { label: "HACKATHONS", value: "2X FIRST PLACE" },
 ] as const;
@@ -41,6 +41,42 @@ export interface Project {
 
 export const PROJECTS: readonly Project[] = [
   {
+    title: "Observal",
+    company: "BlazeUp AI · Open Source",
+    date: "2026",
+    summary: "Multi-agent coding telemetry with enterprise auth",
+    description:
+      "Open source contributor to Observal, the BlazeUp AI observability layer for AI coding tools. Implemented support for Gemini, Codex, OpenCode, and GitHub Copilot, plus enterprise-ready API-key authentication with security controls built for team and production deployments.",
+    github: "https://github.com/BlazeUp-AI/Observal",
+    thumbnailAccent: "cyan",
+    thumbnailLines: ["OBSERVAL", "AI TOOLING"],
+    thumbnailMetric: "4·TOOLS",
+    thumbnailImage: "/project-thumbnails/observal/main.png",
+    innovations: [
+      {
+        title: "Multi-Tool AI Coding Support",
+        description:
+          "Expanded Observal beyond a single-tool workflow with support for Gemini, Codex, OpenCode, and GitHub Copilot. Different coding agents now feed into one observability surface instead of living in disconnected silos.",
+        visual: "integration",
+        tags: ["GEMINI", "CODEX", "COPILOT"],
+      },
+      {
+        title: "Enterprise API-Key Authentication",
+        description:
+          "Implemented API-key based authentication designed for enterprise usage: secure key issuance, validation, and access control patterns that let teams connect coding tools without weakening the perimeter.",
+        visual: "auth",
+        tags: ["API KEYS", "ENTERPRISE", "AUTH"],
+      },
+      {
+        title: "Security-First Integration Layer",
+        description:
+          "Hardened the integration path around multiple security features so third-party AI coding tools can be connected safely. The goal was not just compatibility — it was trustable operational access.",
+        visual: "architecture",
+        tags: ["SECURITY", "OSS"],
+      },
+    ],
+  },
+  {
     title: "Strawberry GraphQL",
     company: "Open Source",
     date: "2021",
@@ -50,6 +86,7 @@ export const PROJECTS: readonly Project[] = [
     github: "https://github.com/strawberry-graphql/strawberry",
     thumbnailAccent: "cyan",
     thumbnailLines: ["STRAWBERRY", "GRAPHQL"],
+    thumbnailImage: "/project-thumbnails/strawberry-graphql/main.png",
     innovations: [
       {
         title: "Query Batching",
@@ -298,7 +335,7 @@ export const SECTIONS = {
     chapter: "I",
     heading: ["The", "Builder"],
     body1:
-      "Nineteen. Self-taught across engineering and business. Shipped production systems, contributed to open source (Strawberry GraphQL), and took a healthcare marketplace from zero to traction \u2014 owning product, sales, and every hard decision in between.",
+      "Nineteen. Self-taught across engineering and business. Shipped production systems, contributed to open source (Strawberry GraphQL and Observal), and took a healthcare marketplace from zero to traction \u2014 owning product, sales, and every hard decision in between.",
     body2: "AWS Developer Associate. Google Cloud Engineer. Two hackathon first places. Currently building in stealth. Not here to add features \u2014 here to build companies that last.",
   },
   philosophy: {
