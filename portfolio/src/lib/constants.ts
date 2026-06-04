@@ -1,5 +1,5 @@
 export const ARTIFACTS = [
-  { label: "OPEN SOURCE", value: "STRAWBERRY \u00B7 OBSERVAL" },
+  { label: "OPEN SOURCE", value: "ULTIMATE PI \u00B7 OBSERVAL \u00B7 STRAWBERRY" },
   { label: "HOSPITALJOBS.IN", value: "FOUNDER \u00B7 GTM, SALES & PRODUCT" },
   { label: "HACKATHONS", value: "2X FIRST PLACE" },
 ] as const;
@@ -40,6 +40,63 @@ export interface Project {
 }
 
 export const PROJECTS: readonly Project[] = [
+  {
+    title: "Ultimate Pi",
+    company: "Open Source · Pi package",
+    date: "2026",
+    summary: "The ultimate AI coding harness built on pi.dev",
+    description:
+      "Built Ultimate Pi, an open-source AI coding harness on top of pi.dev. It combines decades of software engineering, project management, and team management knowledge into a governed plan → run → review system with agentic debate, local-first code intelligence, quality sensors, security, telemetry, and project wikis built in.",
+    github: "https://github.com/aryaniyaps/ultimate-pi",
+    thumbnailAccent: "gold",
+    thumbnailLines: ["ULTIMATE", "PI"],
+    thumbnailMetric: "PLAN → RUN → REVIEW",
+    thumbnailImage: "/project-thumbnails/ultimate-pi/main.png",
+    innovations: [
+      {
+        title: "Knowledge-Graph Driven Workflow",
+        description:
+          "Core workflows synthesize decades of software engineering, project management, and team management practice through a knowledge graph. The harness is not a prompt wrapper — it encodes how good teams plan, execute, critique, and close the loop.",
+        visual: "architecture",
+        tags: ["KNOWLEDGE GRAPH", "PM", "SE"],
+      },
+      {
+        title: "Autonomous Plan → Run → Review Loop",
+        description:
+          "Three distinct phases keep autonomy controlled: plan creates the target, run implements against it, and review verifies intent. The harness can continue through repair cycles until the approved plan is implemented as intended.",
+        visual: "agents",
+        tags: ["PLAN", "RUN", "REVIEW"],
+      },
+      {
+        title: "Agentic Debate Orchestration",
+        description:
+          "Built-in debate flows add adversarial critique to planning and review. Instead of trusting a single agent pass, the harness can route decisions through evaluator, adversary, and tie-breaker style checks before work is accepted.",
+        visual: "integration",
+        tags: ["DEBATE", "CRITIQUE", "GATES"],
+      },
+      {
+        title: "Local-First Code Intelligence",
+        description:
+          "Graphify knowledge graphs, semantic code indexing, project wiki generation, web fetching, and context compression run locally-first. Users only need to pay for their LLM provider key — not a stack of external retrieval APIs.",
+        visual: "data",
+        tags: ["GRAPHIFY", "SEMANTIC INDEX", "WIKI"],
+      },
+      {
+        title: "Quality, Governance & Security Sensors",
+        description:
+          "Harness governance can be toggled on command, while LSP diagnostics, Sentrux structural rules, self-evolving Sentrux configuration, VCC compaction, context-mode compression, and Microsoft Agent Governance Toolkit support protect codebase quality and safety.",
+        visual: "testing",
+        tags: ["SENTRUX", "LSP", "AGT"],
+      },
+      {
+        title: "Extensible Pi-Native Platform",
+        description:
+          "Ships 27+ real software engineering skills, subagent support, PostHog-powered telemetry, configurable heuristic web-retrieval angles, and an extension surface for custom skills and Pi extensions without forcing opinions about design or product-specific workflows.",
+        visual: "code",
+        tags: ["27+ SKILLS", "SUBAGENTS", "EXTENSIBLE"],
+      },
+    ],
+  },
   {
     title: "Observal",
     company: "BlazeUp AI · Open Source",
